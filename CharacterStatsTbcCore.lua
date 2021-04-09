@@ -50,7 +50,10 @@ local function CSC_PaperDollFrame_SetLabelAndText(statFrame, label, text, isPerc
 	else
 		statFrame.Value:SetText(text);
 	end
-	statFrame.numericValue = numericValue;
+
+	if (numericValue) then
+		statFrame.numericValue = numericValue;
+	end
 
 	if ( statFrame.Label ) then
 		statFrame.Label:SetText(format(STAT_FORMAT, label));
@@ -643,7 +646,7 @@ function CSC_PaperDollFrame_SetMeleeAttackPower(statFrame, unit)
     
     local valueText, tooltipText = CSC_PaperDollFormatStat(MELEE_ATTACK_POWER, base, posBuff, negBuff);
     local valueNum = max(0, base + posBuff + negBuff);
-    CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_ATTACK_POWER, valueText, false, valueNum);
+    CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, valueText, false, valueNum);
     statFrame.tooltip = tooltipText;
 	statFrame.tooltip2 = format(MELEE_ATTACK_POWER_TOOLTIP, max((base+posBuff+negBuff), 0)/ATTACK_POWER_MAGIC_NUMBER);
 	statFrame:Show();
@@ -652,13 +655,13 @@ end
 function CSC_PaperDollFrame_SetRangedAttackPower(statFrame, unit)
 	
 	if not IsRangedWeapon() then
-		CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_ATTACK_POWER, NOT_APPLICABLE, false, 0);
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, NOT_APPLICABLE, false, 0);
 		statFrame:Show();
 		return;
 	end
 
 	if ( HasWandEquipped() ) then
-		CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_ATTACK_POWER, NOT_APPLICABLE, false, 0);
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, NOT_APPLICABLE, false, 0);
 		statFrame.tooltip = nil;
 		statFrame:Show();
 		return;
@@ -672,7 +675,7 @@ function CSC_PaperDollFrame_SetRangedAttackPower(statFrame, unit)
 	
     local valueText, tooltipText = CSC_PaperDollFormatStat(RANGED_ATTACK_POWER, base, posBuff, negBuff);
     local valueNum = max(0, base + posBuff + negBuff);
-    CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_ATTACK_POWER, valueText, false, valueNum);
+    CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, valueText, false, valueNum);
 	statFrame.tooltip = tooltipText;
     statFrame.tooltip2 = format(RANGED_ATTACK_POWER_TOOLTIP, valueNum/ATTACK_POWER_MAGIC_NUMBER);
     statFrame:Show();
@@ -810,6 +813,81 @@ function CSC_PaperDollFrame_SetHitChance(statFrame, unit)
 	local hitChanceText = hitChance;
 	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, hitChanceText, true, hitChance);
 	statFrame.hitChance = hitChance;
+	statFrame:Show();
+end
+
+function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
+
+	local statName = getglobal("COMBAT_RATING_NAME"..ratingIndex);
+	local rating = GetCombatRating(ratingIndex);
+	local ratingBonus = GetCombatRatingBonus(ratingIndex);
+
+	-- Set the tooltip text
+	statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..statName.." "..rating..FONT_COLOR_CODE_CLOSE;
+	-- Can probably axe this if else tree if all rating tooltips follow the same format
+	if ( ratingIndex == CR_HIT_MELEE ) then
+		local hitChance = GetHitModifier();
+		ratingBonus = ratingBonus + hitChance;
+		rating = rating + (10*hitChance);
+		statFrame.tooltip2 = format(CR_HIT_MELEE_TOOLTIP, UnitLevel(unit), ratingBonus, GetArmorPenetration());
+	elseif ( ratingIndex == CR_HIT_RANGED ) then
+		statFrame.tooltip2 = format(CR_HIT_RANGED_TOOLTIP, UnitLevel(unit), ratingBonus, GetArmorPenetration());
+	elseif ( ratingIndex == CR_DODGE ) then
+		statFrame.tooltip2 = format(CR_DODGE_TOOLTIP, ratingBonus);
+	elseif ( ratingIndex == CR_PARRY ) then
+		statFrame.tooltip2 = format(CR_PARRY_TOOLTIP, ratingBonus);
+	elseif ( ratingIndex == CR_BLOCK ) then
+		statFrame.tooltip2 = format(CR_PARRY_TOOLTIP, ratingBonus);
+	elseif ( ratingIndex == CR_HIT_SPELL ) then
+		statFrame.tooltip2 = format(CR_HIT_SPELL_TOOLTIP, UnitLevel(unit), ratingBonus, GetSpellPenetration(), GetSpellPenetration());
+	elseif ( ratingIndex == CR_CRIT_SPELL ) then
+		local holySchool = 2;
+		local minCrit = GetSpellCritChance(holySchool);
+		statFrame.spellCrit = {};
+		statFrame.spellCrit[holySchool] = minCrit;
+		local spellCrit;
+		for i=(holySchool+1), MAX_SPELL_SCHOOLS do
+			spellCrit = GetSpellCritChance(i);
+			minCrit = min(minCrit, spellCrit);
+			statFrame.spellCrit[i] = spellCrit;
+		end
+		minCrit = format("%.2f%%", minCrit);
+		statFrame.minCrit = minCrit;
+	elseif ( ratingIndex == CR_EXPERTISE ) then
+		statFrame.tooltip2 = format(CR_EXPERTISE_TOOLTIP, ratingBonus);
+	else
+		statFrame.tooltip2 = HIGHLIGHT_FONT_COLOR_CODE..getglobal("COMBAT_RATING_NAME"..ratingIndex).." "..rating;	
+	end
+
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, statName, rating);
+
+	statFrame:Show();
+end
+
+function CSC_PaperDollFrame_SetExpertise(statFrame, unit)
+	
+	local expertise, offhandExpertise = GetExpertise();
+	local speed, offhandSpeed = UnitAttackSpeed(unit);
+	local text;
+	if( offhandSpeed ) then
+		text = expertise.." / "..offhandExpertise;
+	else
+		text = expertise;
+	end
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_EXPERTISE, text);
+	
+	statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..getglobal("COMBAT_RATING_NAME"..CR_EXPERTISE).." "..text..FONT_COLOR_CODE_CLOSE;
+	
+	local expertisePercent, offhandExpertisePercent = GetExpertisePercent();
+	expertisePercent = format("%.2f", expertisePercent);
+	if( offhandSpeed ) then
+		offhandExpertisePercent = format("%.2f", offhandExpertisePercent);
+		text = expertisePercent.."% / "..offhandExpertisePercent.."%";
+	else
+		text = expertisePercent.."%";
+	end
+	statFrame.tooltip2 = format(CR_EXPERTISE_TOOLTIP, text, GetCombatRating(CR_EXPERTISE), GetCombatRatingBonus(CR_EXPERTISE));
+
 	statFrame:Show();
 end
 

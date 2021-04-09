@@ -97,9 +97,9 @@ function UIConfig:SetCharacterStats(statsTable, category)
         CSC_PaperDollFrame_SetMeleeAttackPower(statsTable[2], unit);
         CSC_PaperDollFrame_SetAttackSpeed(statsTable[3], unit);
         CSC_PaperDollFrame_SetCritChance(statsTable[4], unit);
-        CSC_PaperDollFrame_SetHitChance(statsTable[5], unit);
-
-        CSC_PaperDollFrame_SetArmor(statsTable[6], unit);
+        --CSC_PaperDollFrame_SetHitChance(statsTable[5], unit);
+        CSC_PaperDollFrame_SetHitRating(statsTable[5], unit, CR_HIT_MELEE);
+        CSC_PaperDollFrame_SetExpertise(statsTable[6], unit);
     elseif category == PLAYERSTAT_RANGED_COMBAT then
         if (UISettingsCharacter.showStatsFromArgentDawnItems) then
             CSC_CacheAPFromADItems(unit);
@@ -109,8 +109,8 @@ function UIConfig:SetCharacterStats(statsTable, category)
         CSC_PaperDollFrame_SetRangedAttackPower(statsTable[2], unit);
         CSC_PaperDollFrame_SetRangedAttackSpeed(statsTable[3], unit);
         CSC_PaperDollFrame_SetRangedCritChance(statsTable[4], unit);
-        CSC_PaperDollFrame_SetRangedHitChance(statsTable[5], unit);
-
+        --CSC_PaperDollFrame_SetRangedHitChance(statsTable[5], unit);
+        CSC_PaperDollFrame_SetHitRating(statsTable[5], unit, CR_HIT_RANGED);
         CSC_PaperDollFrame_SetArmor(statsTable[6], unit);
     elseif category == PLAYERSTAT_SPELL_COMBAT then
         CSC_PaperDollFrame_SetSpellPower(statsTable[1], unit);
