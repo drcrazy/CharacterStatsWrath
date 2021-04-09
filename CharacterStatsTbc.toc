@@ -20,7 +20,7 @@ Localization\Localization_br.lua
 
 CharacterStatsTbcConstants.lua
 CharacterStatsTbcUI.lua
+CharacterStatsTbcMain.lua
 CharacterStatsTbcCore.lua
-CharacterStatsTbcUtils.lua
 CharacterStatsTbcClassUtils.lua
 CharacterStatsTbcCallbacks.lua
