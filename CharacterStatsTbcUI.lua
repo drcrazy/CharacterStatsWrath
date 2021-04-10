@@ -42,7 +42,22 @@ local function CSC_ResetStatFrames(statFrames)
     for i=1, NUM_STATS_TO_SHOW, 1 do
         statFrames[i]:Hide();
         statFrames[i]:SetScript("OnEnter", statFrames[i].OnEnterCallback);
+        statFrames[i].tooltip = nil;
+        statFrames[i].tooltip2 = nil;
+        statFrames[i].tooltip3 = nil;
         statFrames[i].Background:SetVertexColor(0, 0, 0, 1);
+    end
+end
+
+local function CSC_ShowStatFrames(statFrames, category)
+    local statsToShow = NUM_STATS_TO_SHOW;
+
+    if (category == PLAYERSTAT_RANGED_COMBAT) then
+        statsToShow = statsToShow - 1;
+    end
+
+    for i=1, statsToShow, 1 do
+        statFrames[i]:Show();
     end
 end
 
@@ -83,44 +98,41 @@ function UIConfig:SetCharacterStats(statsTable, category)
     elseif category == PLAYERSTAT_DEFENSES then
         CSC_PaperDollFrame_SetArmor(statsTable[1], unit);
         CSC_PaperDollFrame_SetDefense(statsTable[2], unit);
-        CSC_PaperDollFrame_SetDodge(statsTable[3], unit);
-        CSC_PaperDollFrame_SetParry(statsTable[4], unit);
+        CSC_PaperDollFrame_SetDodge(statsTable[3]);
+        CSC_PaperDollFrame_SetParry(statsTable[4]);
         CSC_PaperDollFrame_SetBlock(statsTable[5], unit);
-
-        CSC_PaperDollFrame_SetArmor(statsTable[6], unit);
+        CSC_PaperDollFrame_SetResilience(statsTable[6]);
     elseif category == PLAYERSTAT_MELEE_COMBAT then
         if (UISettingsCharacter.showStatsFromArgentDawnItems) then
             CSC_CacheAPFromADItems(unit);
         end
-
+        
         CSC_PaperDollFrame_SetDamage(statsTable[1], unit, category);
         CSC_PaperDollFrame_SetMeleeAttackPower(statsTable[2], unit);
         CSC_PaperDollFrame_SetAttackSpeed(statsTable[3], unit);
         CSC_PaperDollFrame_SetCritChance(statsTable[4], unit);
-        --CSC_PaperDollFrame_SetHitChance(statsTable[5], unit);
         CSC_PaperDollFrame_SetHitRating(statsTable[5], unit, CR_HIT_MELEE);
         CSC_PaperDollFrame_SetExpertise(statsTable[6], unit);
     elseif category == PLAYERSTAT_RANGED_COMBAT then
         if (UISettingsCharacter.showStatsFromArgentDawnItems) then
             CSC_CacheAPFromADItems(unit);
         end
-        
         CSC_PaperDollFrame_SetDamage(statsTable[1], unit, category);
         CSC_PaperDollFrame_SetRangedAttackPower(statsTable[2], unit);
         CSC_PaperDollFrame_SetRangedAttackSpeed(statsTable[3], unit);
         CSC_PaperDollFrame_SetRangedCritChance(statsTable[4], unit);
-        --CSC_PaperDollFrame_SetRangedHitChance(statsTable[5], unit);
         CSC_PaperDollFrame_SetHitRating(statsTable[5], unit, CR_HIT_RANGED);
-        CSC_PaperDollFrame_SetArmor(statsTable[6], unit);
     elseif category == PLAYERSTAT_SPELL_COMBAT then
+        -- TODO Spell Crit and Spell Hit from talents
         CSC_PaperDollFrame_SetSpellPower(statsTable[1], unit);
         CSC_PaperDollFrame_SetHealing(statsTable[2], unit);
         CSC_PaperDollFrame_SetManaRegen(statsTable[3], unit);
         CSC_PaperDollFrame_SetSpellCritChance(statsTable[4], unit);
-        CSC_PaperDollFrame_SetSpellHitChance(statsTable[5], unit);
-
-        CSC_PaperDollFrame_SetArmor(statsTable[6], unit);
+        CSC_PaperDollFrame_SetHitRating(statsTable[5], unit, CR_HIT_SPELL);
+        CSC_PaperDollFrame_SetSpellHaste(statsTable[6]);
     end
+
+    CSC_ShowStatFrames(statsTable, category);
 end
 
 function UIConfig:CreateMenu()
