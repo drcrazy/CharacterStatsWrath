@@ -39,13 +39,17 @@ local function CSC_ResetStatFrames(statFrames)
         statFrameDefaultAlpha = 0;
     end
 
+    if __DEBUG__ then
+        statFrameDefaultAlpha = 1;
+    end
+
     for i=1, NUM_STATS_TO_SHOW, 1 do
         statFrames[i]:Hide();
         statFrames[i]:SetScript("OnEnter", statFrames[i].OnEnterCallback);
         statFrames[i].tooltip = nil;
         statFrames[i].tooltip2 = nil;
         statFrames[i].tooltip3 = nil;
-        statFrames[i].Background:SetVertexColor(0, 0, 0, 1);
+        statFrames[i].Background:SetVertexColor(0, 0, 0, statFrameDefaultAlpha);
     end
 end
 
@@ -123,7 +127,6 @@ function UIConfig:SetCharacterStats(statsTable, category)
         CSC_PaperDollFrame_SetRangedCritChance(statsTable[4], unit);
         CSC_PaperDollFrame_SetHitRating(statsTable[5], unit, CR_HIT_RANGED);
     elseif category == PLAYERSTAT_SPELL_COMBAT then
-        -- TODO Spell Crit and Spell Hit from talents
         CSC_PaperDollFrame_SetSpellPower(statsTable[1], unit);
         CSC_PaperDollFrame_SetHealing(statsTable[2], unit);
         CSC_PaperDollFrame_SetManaRegen(statsTable[3], unit);

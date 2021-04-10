@@ -147,6 +147,59 @@ function CSC_CharacterSpellHitChanceFrame_OnEnter(self)
 	GameTooltip:Show();
 end
 
+function CSC_CharacterHitRatingFrame_OnEnter(self)
+
+	local unit = self.unit;
+	local ratingIndex = self.ratingIndex;
+	local statName = self.statName;
+	local rating = self.rating;
+	local ratingBonus = self.ratingBonus;
+
+	local unitClassId = select(3, UnitClass(unit));
+
+	-- Set the tooltip text
+	local tooltip = HIGHLIGHT_FONT_COLOR_CODE..statName.." "..rating..FONT_COLOR_CODE_CLOSE;
+	local tooltip2 = " ";
+
+	if ( ratingIndex == CR_HIT_MELEE ) then
+		tooltip2 = format(CR_HIT_MELEE_TOOLTIP, UnitLevel(unit), ratingBonus, GetArmorPenetration());
+	elseif ( ratingIndex == CR_HIT_RANGED ) then
+		tooltip2 = format(CR_HIT_RANGED_TOOLTIP, UnitLevel(unit), ratingBonus, GetArmorPenetration());
+	elseif ( ratingIndex == CR_HIT_SPELL ) then
+		-- spell hit from talents
+		if unitClassId == CSC_MAGE_CLASS_ID then
+			local arcaneHit, frostFireHit = CSC_GetMageSpellHitFromTalents();
+			self.arcaneHit = arcaneHit;
+			self.frostHit = frostFireHit;
+			self.fireHit = frostFireHit;
+		elseif unitClassId == CSC_WARLOCK_CLASS_ID then
+			self.afflictionHit = CSC_GetWarlockSpellHitFromTalents();
+		end
+		tooltip2 = format(CR_HIT_SPELL_TOOLTIP, UnitLevel(unit), ratingBonus, GetSpellPenetration(), GetSpellPenetration());
+	else
+		tooltip2 = HIGHLIGHT_FONT_COLOR_CODE..getglobal("COMBAT_RATING_NAME"..ratingIndex).." "..rating;	
+	end
+
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(tooltip, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddLine(tooltip2);
+
+	if unitClassId == CSC_MAGE_CLASS_ID then
+		GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
+		GameTooltip:AddLine(CSC_SPELL_HIT_SUBTOOLTIP_TXT);
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_ARCANE_SPELL_HIT_TXT, (self.arcaneHit + self.spellHitGearTalents).."%");
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_FIRE_SPELL_HIT_TXT, (self.fireHit + self.spellHitGearTalents).."%");
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_FROST_SPELL_HIT_TXT, (self.frostHit + self.spellHitGearTalents).."%");
+	elseif unitClassId == CSC_WARLOCK_CLASS_ID then
+		GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
+		GameTooltip:AddLine(CSC_SPELL_HIT_SUBTOOLTIP_TXT);
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_DESTRUCTION_SPELL_HIT_TXT, self.spellHitGearTalents.."%");
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_AFFLICTION_SPELL_HIT_TXT, (self.afflictionHit + self.spellHitGearTalents).."%");
+	end
+	
+	GameTooltip:Show();
+end
+
 function CSC_CharacterMeleeCritFrame_OnEnter(self)
 	
 	local critChanceTxt = format(PAPERDOLLFRAME_TOOLTIP_FORMAT, MELEE_CRIT_CHANCE).." "..format("%.2F%%", self.critChance);

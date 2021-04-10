@@ -726,25 +726,7 @@ function CSC_PaperDollFrame_SetSpellCritChance(statFrame, unit)
 	statFrame.arcaneCrit = GetSpellCritChance(7);
 
 	local unitClassId = select(3, UnitClass(unit));
-	if (unitClassId == CSC_MAGE_CLASS_ID) then
-		local arcaneInstabilityCrit, criticalMassCrit = CSC_GetMageCritStatsFromTalents();
-		if (arcaneInstabilityCrit > 0) then
-			-- increases the crit of all spell schools
-			statFrame.holyCrit = statFrame.holyCrit + arcaneInstabilityCrit;
-			statFrame.fireCrit = statFrame.fireCrit + arcaneInstabilityCrit;
-			statFrame.natureCrit = statFrame.natureCrit + arcaneInstabilityCrit;
-			statFrame.frostCrit = statFrame.frostCrit + arcaneInstabilityCrit;
-			statFrame.shadowCrit = statFrame.shadowCrit + arcaneInstabilityCrit;
-			statFrame.arcaneCrit = statFrame.arcaneCrit + arcaneInstabilityCrit;
-			-- set the new maximum
-			maxSpellCrit = maxSpellCrit + arcaneInstabilityCrit;
-		end
-		if (criticalMassCrit > 0) then
-			statFrame.fireCrit = statFrame.fireCrit + criticalMassCrit;
-			-- set the new maximum
-			maxSpellCrit = max(maxSpellCrit, statFrame.fireCrit);
-		end
-	elseif (unitClassId == CSC_PRIEST_CLASS_ID) then
+	if (unitClassId == CSC_PRIEST_CLASS_ID) then
 		local priestHolyCrit = CSC_GetPriestCritStatsFromTalents();
 		priestHolyCrit = priestHolyCrit + CSC_GetHolyCritFromBenediction(unit);
 		
@@ -805,13 +787,15 @@ end
 
 function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
 
+	statFrame:SetScript("OnEnter", CSC_CharacterHitRatingFrame_OnEnter)
+	statFrame:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
+
 	local statName = getglobal("COMBAT_RATING_NAME"..ratingIndex);
 	local rating = GetCombatRating(ratingIndex);
-	local ratingBonus = GetCombatRatingBonus(ratingIndex);
+	local ratingBonus = GetCombatRatingBonus(ratingIndex); -- hit rating in % (hit chance)
 
-	-- Set the tooltip text
-	statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..statName.." "..rating..FONT_COLOR_CODE_CLOSE;
-	-- Can probably axe this if else tree if all rating tooltips follow the same format
 	if ( ratingIndex == CR_HIT_MELEE ) then
 		local hitChance = GetHitModifier();
 		if not hitChance then
@@ -819,22 +803,22 @@ function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
 		end
 		ratingBonus = ratingBonus + hitChance;
 		rating = rating + (10*hitChance);
-		statFrame.tooltip2 = format(CR_HIT_MELEE_TOOLTIP, UnitLevel(unit), ratingBonus, GetArmorPenetration());
-	elseif ( ratingIndex == CR_HIT_RANGED ) then
-		statFrame.tooltip2 = format(CR_HIT_RANGED_TOOLTIP, UnitLevel(unit), ratingBonus, GetArmorPenetration());
 	elseif ( ratingIndex == CR_HIT_SPELL ) then
 		local spellHitChance = GetSpellHitModifier();
 		if not spellHitChance then
 			spellHitChance = 0;
 		end
-		-- TODO: spell hit from talents
+
 		ratingBonus = ratingBonus + spellHitChance;
+		statFrame.spellHitGearTalents = ratingBonus;
 		rating = rating + (10*spellHitChance);
-		statFrame.tooltip2 = format(CR_HIT_SPELL_TOOLTIP, UnitLevel(unit), ratingBonus, GetSpellPenetration(), GetSpellPenetration());
-	else
-		statFrame.tooltip2 = HIGHLIGHT_FONT_COLOR_CODE..getglobal("COMBAT_RATING_NAME"..ratingIndex).." "..rating;	
 	end
 
+	statFrame.unit = unit;
+	statFrame.ratingIndex = ratingIndex;
+	statFrame.statName = statName;
+	statFrame.rating = rating;
+	statFrame.ratingBonus = ratingBonus;
 	CSC_PaperDollFrame_SetLabelAndText(statFrame, statName, rating);
 end
 
@@ -935,9 +919,9 @@ function CSC_PaperDollFrame_SetSpellHitChance(statFrame, unit)
 	end
 
 	local hitChanceText = hitChance;
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, hitChanceText, true, hitChance);
 	statFrame.hitChance = hitChance;
 	statFrame.unitClassId = unitClassId;
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, hitChanceText, true, hitChance);
 end
 
 function CSC_PaperDollFrame_SetAttackSpeed(statFrame, unit)

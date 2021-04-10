@@ -5,22 +5,20 @@
 -- returns additional crit % stats from Arcane instability and Critical Mass if any
 function CSC_GetMageCritStatsFromTalents()
 
+	-- !! It looks like these are already included in TBC by default
 	local arcaneInstabilityCrit = 0;
 	local criticalMassCrit = 0;
 
 	-- Arcane Instability (1, 2, 3)%
-	local arcaneInstabilityTable = { 1, 2, 3 };
-	local spellRank = select(5, GetTalentInfo(1, 15));
-	if (spellRank > 0) and (spellRank <= 3) then
-		arcaneInstabilityCrit = arcaneInstabilityTable[spellRank];
-	end
+	-- !!! Already added by default
+	--arcaneInstabilityCrit = select(5, GetTalentInfo(1, 17));
 
 	-- Critical Mass (2, 4, 6)%
-	local criticalMassTable = { 2, 4, 6 };
-	spellRank = select(5, GetTalentInfo(2, 13));
-	if (spellRank > 0) and (spellRank <= 3) then
-		criticalMassCrit = criticalMassTable[spellRank];
-    end
+	--local criticalMassTable = { 2, 4, 6 };
+	--local spellRank = select(5, GetTalentInfo(2, 14));
+	--if (spellRank > 0) and (spellRank <= 3) then
+	--	criticalMassCrit = criticalMassTable[spellRank];
+    --end
 
 	return arcaneInstabilityCrit, criticalMassCrit;
 end
@@ -35,8 +33,7 @@ function CSC_GetMageSpellHitFromTalents()
 	arcaneHit = spellRank * 2; -- 2% for each point
 
 	-- Elemental Precision
-	spellRank = select(5, GetTalentInfo(3, 3));
-	frostFireHit = spellRank * 2; -- 2% for each point
+	frostFireHit = select(5, GetTalentInfo(3, 3));
 
 	return arcaneHit, frostFireHit;
 end
@@ -66,18 +63,12 @@ function CSC_GetPriestCritStatsFromTalents()
 	local holySpecializationCrit = 0;
 	local forceOfWillCrit = 0;
 
-	local critTable = { 1, 2, 3, 4, 5 };
+	-- !!! Already counted by default
 	-- Holy Specialization (1, 2, 3, 4, 5)%
-	local spellRank = select(5, GetTalentInfo(2, 3));
-	if (spellRank > 0) and (spellRank <= 5) then
-		holySpecializationCrit = critTable[spellRank];
-	end
+	--holySpecializationCrit = select(5, GetTalentInfo(2, 3));
 
 	-- Force of Will (1, 2, 3, 4, 5)%
-	spellRank = select(5, GetTalentInfo(1, 14));
-	if (spellRank > 0) and (spellRank <= 5) then
-		forceOfWillCrit = critTable[spellRank];
-	end
+	forceOfWillCrit = select(5, GetTalentInfo(1, 17));
 
     local critCombined = holySpecializationCrit + forceOfWillCrit;
 	return critCombined;
@@ -182,17 +173,9 @@ end
 
 -- returns the bonus crit from the Call of Thunder talent for Shamans
 function CSC_GetShamanCallOfThunderCrit()
-	local bonusCrit = 0;
-	local talentTable = { 1, 2, 3, 4, 6 };
-
 	-- Call of Thunder (Lightning)
 	local spellRank = select(5, GetTalentInfo(1, 8));
-
-    if (spellRank > 0) and (spellRank <=5) then
-		bonusCrit = talentTable[spellRank];
-	end
-
-	return bonusCrit;
+	return spellRank;
 end
 
 -- returns the bonus crit from the Tidal Mastery telent for Shamans
@@ -203,13 +186,14 @@ function CSC_GetShamanTidalMasteryCrit()
 end
 
 -- ITEMS AND ENCHANTS RELATED
+-- TODO: Check the modifier
 function CSC_GetMP5ModifierFromTalents(unit)
     local unitClassId = select(3, UnitClass(unit));
 	local spellRank = 0;
 
 	if unitClassId == CSC_PRIEST_CLASS_ID then
 		-- Meditation
-        spellRank = select(5, GetTalentInfo(1, 8));
+        spellRank = select(5, GetTalentInfo(1, 9));
 	elseif unitClassId == CSC_MAGE_CLASS_ID then
 		-- Arcane Meditation
 		spellRank = select(5, GetTalentInfo(1, 12));
