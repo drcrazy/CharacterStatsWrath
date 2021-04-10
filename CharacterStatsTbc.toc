@@ -1,4 +1,4 @@
-## Interface: 11306
+## Interface: 20501
 ## Author: Peter Getov
 ## Version: 0.0.1b
 ## Title: |cff00aeffCharacterStatsTBC|r
