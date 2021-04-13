@@ -43,21 +43,18 @@ local function CSC_GetAppropriateAttackRaiting(unit, category)
 	return attackWithModifier;
 end
 
-local function CSC_PaperDollFrame_SetLabelAndText(statFrame, label, text, isPercentage, numericValue, precision)
+local function CSC_PaperDollFrame_SetLabelAndText(statFrame, label, text, isPercentage)
 	if ( isPercentage ) then
-		precision = precision or "%.1F%%";
-		statFrame.Value:SetText(format(precision, numericValue));
-	else
-		statFrame.Value:SetText(text);
+		text = format("%.2f%%", text);
 	end
-
-	if (numericValue) then
-		statFrame.numericValue = numericValue;
-	end
-
+	
 	if ( statFrame.Label ) then
+		if (statFrame.Value) then
+			statFrame.Value:SetText(text);
+		end
+
 		statFrame.Label:SetText(format(STAT_FORMAT, label));
-		statFrame.Label:SetWidth(statFrame:GetWidth() - statFrame.Value:GetWidth() - 20);
+		statFrame.Label:SetWidth(statFrame:GetWidth() - 20);
 		statFrame.Label:SetHeight(statFrame:GetHeight());
 		statFrame.Label:SetJustifyH("LEFT");
 	end
@@ -466,7 +463,7 @@ function CSC_PaperDollFrame_SetPrimaryStats(statFrames, unit)
 			end
 		end
 
-		CSC_PaperDollFrame_SetLabelAndText(statFrames[i], statName, frameText, false, effectiveStat);
+		CSC_PaperDollFrame_SetLabelAndText(statFrames[i], statName, frameText, false);
 	end
 end
 
@@ -474,7 +471,7 @@ end
 function CSC_PaperDollFrame_SetDamage(statFrame, unit, category)
 
 	if (category == PLAYERSTAT_RANGED_COMBAT) and not IsRangedWeapon() then
-		CSC_PaperDollFrame_SetLabelAndText(statFrame, DAMAGE, NOT_APPLICABLE, false, 0);
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, DAMAGE, NOT_APPLICABLE, false);
 		return;
 	end
 
@@ -556,7 +553,7 @@ function CSC_PaperDollFrame_SetDamage(statFrame, unit, category)
 		end
     end
     
-    CSC_PaperDollFrame_SetLabelAndText(statFrame, DAMAGE, damageText, false, displayMax);
+    CSC_PaperDollFrame_SetLabelAndText(statFrame, DAMAGE, damageText, false);
 
     statFrame.damage = damageTooltip;
 	statFrame.attackSpeed = speed;
@@ -625,7 +622,7 @@ function CSC_PaperDollFrame_SetAttackBothHands(statFrame, unit)
 		attackText = color..attackWithModifier..FONT_COLOR_CODE_CLOSE;
 	end
 
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, DAMAGE, attackText, false, attackWithModifier);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, DAMAGE, attackText, false);
 
 	statFrame.tooltip = ATTACK_TOOLTIP;
 	statFrame.tooltip2 = ATTACK_TOOLTIP_SUBTEXT;
@@ -641,7 +638,7 @@ function CSC_PaperDollFrame_SetMeleeAttackPower(statFrame, unit)
     
     local valueText, tooltipText = CSC_PaperDollFormatStat(MELEE_ATTACK_POWER, base, posBuff, negBuff);
     local valueNum = max(0, base + posBuff + negBuff);
-    CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, valueText, false, valueNum);
+    CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, valueText, false);
     statFrame.tooltip = tooltipText;
 	statFrame.tooltip2 = format(MELEE_ATTACK_POWER_TOOLTIP, max((base+posBuff+negBuff), 0)/ATTACK_POWER_MAGIC_NUMBER);
 end
@@ -649,12 +646,12 @@ end
 function CSC_PaperDollFrame_SetRangedAttackPower(statFrame, unit)
 	
 	if not IsRangedWeapon() then
-		CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, NOT_APPLICABLE, false, 0);
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, NOT_APPLICABLE, false);
 		return;
 	end
 
 	if ( HasWandEquipped() ) then
-		CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, NOT_APPLICABLE, false, 0);
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, NOT_APPLICABLE, false);
 		statFrame.tooltip = nil;
 		return;
 	end
@@ -667,7 +664,7 @@ function CSC_PaperDollFrame_SetRangedAttackPower(statFrame, unit)
 	
     local valueText, tooltipText = CSC_PaperDollFormatStat(RANGED_ATTACK_POWER, base, posBuff, negBuff);
     local valueNum = max(0, base + posBuff + negBuff);
-    CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, valueText, false, valueNum);
+    CSC_PaperDollFrame_SetLabelAndText(statFrame, ATTACK_POWER, valueText, false);
 	statFrame.tooltip = tooltipText;
     statFrame.tooltip2 = format(RANGED_ATTACK_POWER_TOOLTIP, valueNum/ATTACK_POWER_MAGIC_NUMBER);
 end
@@ -682,15 +679,14 @@ function CSC_PaperDollFrame_SetCritChance(statFrame, unit)
 	
 	local critChance = GetCritChance();
 
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, MELEE_CRIT_CHANCE, critChance, true, critChance, "%.2F%%");
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, MELEE_CRIT_CHANCE, critChance, true);
 	statFrame.critChance = critChance;
-	--statFrame.criticalStrikeTxt = format(PAPERDOLLFRAME_TOOLTIP_FORMAT, MELEE_CRIT_CHANCE).." "..format("%.2F%%", critChance);
 end
 
 function CSC_PaperDollFrame_SetRangedCritChance(statFrame, unit)
 
 	if not IsRangedWeapon() then
-		CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_CRITICAL_STRIKE, NOT_APPLICABLE, false, 0);
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_CRITICAL_STRIKE, NOT_APPLICABLE, false);
 		return;
 	end
 
@@ -698,7 +694,7 @@ function CSC_PaperDollFrame_SetRangedCritChance(statFrame, unit)
 
 	statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..RANGED_CRIT_CHANCE.." "..format("%.2F%%", critChance)..FONT_COLOR_CODE_CLOSE;
 	statFrame.tooltip2 = format(CR_CRIT_RANGED_TOOLTIP, GetCombatRating(CR_CRIT_RANGED), GetCombatRatingBonus(CR_CRIT_RANGED));
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, RANGED_CRIT_CHANCE, critChance, true, critChance, "%.2F%%");
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, RANGED_CRIT_CHANCE, critChance, true);
 end
 
 function CSC_PaperDollFrame_SetSpellCritChance(statFrame, unit)
@@ -764,7 +760,7 @@ function CSC_PaperDollFrame_SetSpellCritChance(statFrame, unit)
 	end
 	statFrame.unitClassId = unitClassId;
 
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, SPELL_CRIT_CHANCE, maxSpellCrit, true, maxSpellCrit);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, SPELL_CRIT_CHANCE, maxSpellCrit, true);
 end
 
 function CSC_PaperDollFrame_SetHitChance(statFrame, unit)
@@ -781,7 +777,7 @@ function CSC_PaperDollFrame_SetHitChance(statFrame, unit)
 	end
 
 	local hitChanceText = hitChance;
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, hitChanceText, true, hitChance);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, hitChanceText, true);
 	statFrame.hitChance = hitChance;
 end
 
@@ -794,10 +790,10 @@ function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
 
 	local statName = getglobal("COMBAT_RATING_NAME"..ratingIndex);
 	local rating = GetCombatRating(ratingIndex);
-	local ratingBonus = GetCombatRatingBonus(ratingIndex); -- hit rating in % (hit chance)
+	local ratingBonus = GetCombatRatingBonus(ratingIndex); -- hit rating in % (hit chance) (from gear sources, doesn't seem to include talents)
 
 	if ( ratingIndex == CR_HIT_MELEE ) then
-		local hitChance = GetHitModifier();
+		local hitChance = GetHitModifier(); -- includes talents, doesn't include hit raiting from gear
 		if not hitChance then
 			hitChance = 0;
 		end
@@ -869,7 +865,7 @@ end
 function CSC_PaperDollFrame_SetRangedHitChance(statFrame, unit)
 	
 	if not IsRangedWeapon() then
-		CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, NOT_APPLICABLE, false, 0);
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, NOT_APPLICABLE, false);
 		return;
 	end
 
@@ -890,7 +886,7 @@ function CSC_PaperDollFrame_SetRangedHitChance(statFrame, unit)
 	end
 
 	local hitChanceText = hitChance;
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, hitChanceText, true, hitChance);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, hitChanceText, true);
 	statFrame.hitChance = hitChance;
 end
 
@@ -921,7 +917,7 @@ function CSC_PaperDollFrame_SetSpellHitChance(statFrame, unit)
 	local hitChanceText = hitChance;
 	statFrame.hitChance = hitChance;
 	statFrame.unitClassId = unitClassId;
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, hitChanceText, true, hitChance);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, hitChanceText, true);
 end
 
 function CSC_PaperDollFrame_SetAttackSpeed(statFrame, unit)
@@ -937,7 +933,7 @@ function CSC_PaperDollFrame_SetAttackSpeed(statFrame, unit)
 		displaySpeed =  displaySpeed;
 	end
 
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, WEAPON_SPEED, displaySpeed, false, speed);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, WEAPON_SPEED, displaySpeed, false);
 	statFrame.tooltip = format(PAPERDOLLFRAME_TOOLTIP_FORMAT, ATTACK_SPEED).." "..displaySpeed;
 	statFrame.tooltip2 = format(CR_HASTE_RATING_TOOLTIP, GetCombatRating(CR_HASTE_MELEE), GetCombatRatingBonus(CR_HASTE_MELEE));
 end
@@ -945,7 +941,7 @@ end
 function CSC_PaperDollFrame_SetRangedAttackSpeed(statFrame, unit)
 	
 	if not IsRangedWeapon() then
-		CSC_PaperDollFrame_SetLabelAndText(statFrame, WEAPON_SPEED, NOT_APPLICABLE, false, 0);
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, WEAPON_SPEED, NOT_APPLICABLE, false);
 		return;
 	end
 
@@ -954,7 +950,7 @@ function CSC_PaperDollFrame_SetRangedAttackSpeed(statFrame, unit)
 
 	statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..ATTACK_SPEED.." "..displaySpeed..FONT_COLOR_CODE_CLOSE;
 	statFrame.tooltip2 = format(CR_HASTE_RATING_TOOLTIP, GetCombatRating(CR_HASTE_RANGED), GetCombatRatingBonus(CR_HASTE_RANGED));
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, WEAPON_SPEED, displaySpeed, false, attackSpeed);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, WEAPON_SPEED, displaySpeed, false);
 end
 
 -- DEFENSES --
@@ -985,7 +981,7 @@ function CSC_PaperDollFrame_SetArmor(statFrame, unit)
 	local valueText, tooltipText = CSC_PaperDollFormatStat(ARMOR, base, posBuff, negBuff);
 	local valueNum = max(0, base + posBuff + negBuff);
 
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_ARMOR, valueText, false, valueNum);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_ARMOR, valueText, false);
 	statFrame.tooltip = tooltipText;
 	statFrame.tooltip2 = format(DEFAULT_STATARMOR_TOOLTIP, armorReduction);
 	
@@ -1018,19 +1014,19 @@ function CSC_PaperDollFrame_SetDefense(statFrame, unit)
 	local valueText, defenseText = CSC_PaperDollFormatStat(DEFENSE, base, posBuff, negBuff);
 	local valueNum = max(0, base + posBuff + negBuff);
 	statFrame.defense = defenseText;
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, CSC_DEFENSE, valueText, false, valueNum);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, CSC_DEFENSE, valueText, false);
 end
 
 function CSC_PaperDollFrame_SetDodge(statFrame)
 	local chance = GetDodgeChance();
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_DODGE, chance, true, chance, "%.2F");
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_DODGE, chance, true);
 	statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..getglobal("DODGE_CHANCE").." "..string.format("%.02f", chance).."%"..FONT_COLOR_CODE_CLOSE;
 	statFrame.tooltip2 = format(CR_DODGE_TOOLTIP, GetCombatRating(CR_DODGE), GetCombatRatingBonus(CR_DODGE));
 end
 
 function CSC_PaperDollFrame_SetParry(statFrame)
 	local chance = GetParryChance();
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_PARRY, chance, true, chance, "%.2F%%");
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_PARRY, chance, true);
 	statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..getglobal("PARRY_CHANCE").." "..string.format("%.02f", chance).."%"..FONT_COLOR_CODE_CLOSE;
 	statFrame.tooltip2 = format(CR_PARRY_TOOLTIP, GetCombatRating(CR_PARRY), GetCombatRatingBonus(CR_PARRY));
 end
@@ -1097,7 +1093,7 @@ function CSC_PaperDollFrame_SetBlock(statFrame, unit)
 	end)
 	
 	local blockChance = GetBlockChance();
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_BLOCK, blockChance, true, blockChance, "%.2F%%");
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_BLOCK, blockChance, true);
 
 	statFrame.blockChance = HIGHLIGHT_FONT_COLOR_CODE..getglobal("BLOCK_CHANCE").." "..string.format("%.02f", blockChance).."%"..FONT_COLOR_CODE_CLOSE;
 end
@@ -1126,7 +1122,7 @@ function CSC_PaperDollFrame_SetSpellPower(statFrame, unit)
 		statFrame.spVsUndead = maxSpellDmg;
 	end
 
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_SPELLPOWER, BreakUpLargeNumbers(maxSpellDmg), false, maxSpellDmg);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_SPELLPOWER, BreakUpLargeNumbers(maxSpellDmg), false);
 end
 
 local function CSC_GetMP5FromAuras()
@@ -1163,7 +1159,7 @@ end
 function CSC_PaperDollFrame_SetManaRegen(statFrame, unit)
 
 	if ( not UnitHasMana(unit) ) then
-		CSC_PaperDollFrame_SetLabelAndText(statFrame, MANA_REGEN, NOT_APPLICABLE, false, 0);
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, MANA_REGEN, NOT_APPLICABLE, false);
 		statFrame.tooltip = nil;
 		return;
 	end
@@ -1203,7 +1199,7 @@ function CSC_PaperDollFrame_SetManaRegen(statFrame, unit)
 	local regenWhenNotCastingText = BreakUpLargeNumbers(regenWhenNotCasting);
 	local castingText = BreakUpLargeNumbers(casting);
 	-- While Casting mana regen is most important to the player, so we display it as the main value
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, MANA_REGEN, castingText, false, casting);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, MANA_REGEN, castingText, false);
 	statFrame.mp5FromGear = BreakUpLargeNumbers(mp5FromGear);
 	statFrame.mp5Casting = castingText;
 	statFrame.mp5NotCasting = regenWhenNotCastingText;
@@ -1214,7 +1210,7 @@ function CSC_PaperDollFrame_SetHealing(statFrame, unit)
 	local healing = GetSpellBonusHealing();
 
 	local healingText = healing;
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_SPELLHEALING, healingText, false, healing);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_SPELLHEALING, healingText, false);
 	statFrame.tooltip = STAT_SPELLHEALING.." "..healing;
 	statFrame.tooltip2 = STAT_SPELLHEALING_TOOLTIP;
 end
@@ -1234,3 +1230,160 @@ function CSC_PaperDollFrame_SetResilience(statFrame)
 	statFrame.tooltip = HIGHLIGHT_FONT_COLOR_CODE..STAT_RESILIENCE.." "..resilience..FONT_COLOR_CODE_CLOSE;
 	statFrame.tooltip2 = format(RESILIENCE_TOOLTIP, bonus, min(bonus * 2, 25.00), bonus);
 end
+
+-- SIDE STATS FRAME ================================================================================================================================================================
+-- Melee
+function CSC_SideFrame_SetMeleeHitChance(statFrame, unit)
+	
+	statFrame:SetScript("OnEnter", CSC_CharacterMeleeHitChanceSideFrame_OnEnter)
+	statFrame:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
+	
+	local hitChance = GetHitModifier();
+	
+	if not hitChance then
+		hitChance = 0;
+	end
+
+	local hitRatingBonus = GetCombatRatingBonus(CR_HIT_MELEE); -- hit rating in % (hit chance) (from gear sources, doesn't seem to include talents);
+	local totalHit = hitChance + hitRatingBonus;
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, totalHit, true);
+end
+
+function CSC_SideFrame_SetMeleeCritRating(statFrame, unit)
+	local critRating = GetCombatRating(CR_CRIT_MELEE);
+	statFrame.tooltip = "Your crit rating.";
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, COMBAT_RATING_NAME9, critRating, false);
+end
+
+function CSC_SideFrame_SetMeleeHasteRating(statFrame, unit)
+	local hasteRating = GetCombatRating(CR_HASTE_MELEE);
+	statFrame.tooltip = format(CR_HASTE_RATING_TOOLTIP, GetCombatRating(CR_HASTE_MELEE), GetCombatRatingBonus(CR_HASTE_MELEE));
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, SPELL_HASTE, hasteRating, false);
+end
+
+function CSC_SideFrame_SetArmorPenetration(statFrame, unit)
+	local armorPen = GetArmorPenetration();
+	statFrame.tooltip = format(ITEM_MOD_ARMOR_PENETRATION_RATING, armorPen);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Armor Penetration", armorPen, false);
+end
+
+-- Ranged
+function CSC_SideFrame_SetRangedHitChance(statFrame, unit)
+	if not IsRangedWeapon() then
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, NOT_APPLICABLE, false);
+		return;
+	end
+
+	-- TODO: change this in the future with a dedicated function
+	statFrame:SetScript("OnEnter", CSC_CharacterMeleeHitChanceSideFrame_OnEnter)
+	statFrame:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
+	
+	local hitChance = GetHitModifier();
+	
+	if not hitChance then
+		hitChance = 0;
+	end
+
+	local hitFromScope = CSC_GetHitFromBiznicksAccurascope(unit);
+	if (hitFromScope > 0) then
+		hitChance = hitChance + hitFromScope;
+	end
+
+	local hitRatingBonus = GetCombatRatingBonus(CR_HIT_RANGED); -- hit rating in % (hit chance) (from gear sources, doesn't seem to include talents);
+	local totalHit = hitChance + hitRatingBonus;
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, totalHit, true);
+end
+
+function CSC_SideFrame_SetRangedCritRating(statFrame, unit)
+	if not IsRangedWeapon() then
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, COMBAT_RATING_NAME9, NOT_APPLICABLE, false);
+		return;
+	end
+
+	local critRating = GetCombatRating(CR_CRIT_RANGED);
+	statFrame.tooltip = "Your crit rating.";
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, COMBAT_RATING_NAME9, critRating, false);
+end
+
+function CSC_SideFrame_SetRangedHasteRating(statFrame, unit)
+	if not IsRangedWeapon() then
+		CSC_PaperDollFrame_SetLabelAndText(statFrame, SPELL_HASTE, NOT_APPLICABLE, false);
+		return;
+	end
+
+	local hasteRating = GetCombatRating(CR_HASTE_RANGED);
+	statFrame.tooltip = format(CR_HASTE_RATING_TOOLTIP, GetCombatRating(CR_HASTE_RANGED), GetCombatRatingBonus(CR_HASTE_RANGED));
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, SPELL_HASTE, hasteRating, false);
+end
+
+-- Spell
+function CSC_SideFrame_SetSpellHitChance(statFrame, unit)
+	-- TODO: change this in the future with a dedicated function
+	statFrame:SetScript("OnEnter", CSC_CharacterMeleeHitChanceSideFrame_OnEnter)
+	statFrame:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
+	
+	local spellHitChance = GetSpellHitModifier();
+	if not spellHitChance then
+		spellHitChance = 0;
+	end
+
+	local hitRatingBonus = GetCombatRatingBonus(CR_HIT_SPELL); -- hit rating in % (hit chance) (from gear sources, doesn't seem to include talents)
+	local totalHit = spellHitChance + hitRatingBonus;
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, totalHit, true);
+end
+
+function CSC_SideFrame_SetSpellCritRating(statFrame, unit)
+	local critRating = GetCombatRating(CR_CRIT_SPELL);
+	statFrame.tooltip = "Your crit rating.";
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, COMBAT_RATING_NAME11, critRating, false);
+end
+
+function CSC_SideFrame_SetSpellHastePercent(statFrame, unit)
+	local hastePercent = GetCombatRatingBonus(CR_HASTE_SPELL);
+	statFrame.tooltip = format("Increases your spell haste by %d%%", hastePercent);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Haste", hastePercent, true);
+end
+
+function CSC_SideFrame_SetSpellPenetration(statFrame, unit)
+	local spellPen = GetSpellPenetration();
+	statFrame.tooltip = format(SPELL_PENETRATION_TOOLTIP, spellPen, spellPen);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Spell Penetration", spellPen, false);
+end
+
+-- Defense
+function CSC_SideFrame_SetDefenseRating(statFrame, unit)
+	local defensePercent = GetDodgeBlockParryChanceFromDefense();
+	local defenseRating = GetCombatRating(CR_DEFENSE_SKILL);
+	local defense = GetCombatRatingBonus(CR_DEFENSE_SKILL);
+
+	statFrame.tooltip = format(DEFAULT_STATDEFENSE_TOOLTIP, defenseRating, defense, defensePercent, defensePercent);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Defense Rating", defenseRating, false);
+end
+
+function CSC_SideFrame_SetDodgeRating(statFrame, unit)
+	local dodgeRating = GetCombatRating(CR_DODGE);
+	local dodgeChance = GetCombatRatingBonus(CR_DODGE);
+	statFrame.tooltip = format(CR_DODGE_TOOLTIP, dodgeRating, dodgeChance);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Dodge Rating", dodgeRating, false);
+end
+
+function CSC_SideFrame_SetParryRating(statFrame, unit)
+	local parryRating = GetCombatRating(CR_PARRY)
+	local parryChance = GetCombatRatingBonus(CR_PARRY);
+	statFrame.tooltip = format(CR_PARRY_TOOLTIP, parryRating, parryChance);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Parry Rating", parryRating, false);
+end
+
+function CSC_SideFrame_SetBlockRating(statFrame, unit)
+	local blockRating = GetCombatRating(CR_BLOCK)
+	local blockChance = GetCombatRatingBonus(CR_BLOCK);
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Block Rating", blockRating, false);
+end
+
+-- SIDE STATS FRAME END ================================================================================================================================================================

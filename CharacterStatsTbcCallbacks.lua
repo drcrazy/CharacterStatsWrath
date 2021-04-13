@@ -220,4 +220,13 @@ function CSC_CharacterDefenseFrame_OnEnter(self)
 	GameTooltip:AddLine(ratingTxt);
 	GameTooltip:Show();
 end
+
+-- SIDE FRAME CALLBACKS
+function CSC_CharacterMeleeHitChanceSideFrame_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(STAT_HIT_CHANCE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddLine("Your total hit rating converted to hit chance (including gear and talents)");
+	GameTooltip:Show();
+end
+-- SIDE FRAME CALLBACKS END
 -- OnEnter Tooltip functions END

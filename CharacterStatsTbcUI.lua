@@ -75,7 +75,7 @@ local function CSC_ResetStatFrames(statFrames)
         statFrames[i].tooltip = nil;
         statFrames[i].tooltip2 = nil;
         statFrames[i].tooltip3 = nil;
-        statFrames[i].Background:SetVertexColor(0, 0, 0, statFrameDefaultAlpha);
+        --statFrames[i].Background:SetVertexColor(0, 0, 0, statFrameDefaultAlpha);
     end
 end
 
@@ -104,18 +104,24 @@ function UIConfig:InitializeStatsFrames(leftParentFrame, rightParentFrame)
             accumulatedOffsetY = 32;
         end
 
-        LeftStatsTable[i] = CreateFrame("Frame", nil, leftParentFrame, "CharacterStatFrameTemplate");
-        LeftStatsTable[i]:SetPoint("LEFT", leftParentFrame, "TOPLEFT", 10, -actualOffset);
+        LeftStatsTable[i] = CreateFrame("Frame", nil, leftParentFrame, "StatFrameTemplate");
+        LeftStatsTable[i]:SetPoint("LEFT", leftParentFrame, "TOPLEFT", 20, -actualOffset);
         LeftStatsTable[i]:SetWidth(130);
         LeftStatsTable[i].OnEnterCallback = LeftStatsTable[i]:GetScript("OnEnter");
+        LeftStatsTable[i].Value = LeftStatsTable[i]:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall");
+        LeftStatsTable[i].Value:SetPoint("RIGHT", LeftStatsTable[i].Label, "RIGHT", 0, 0);
+        LeftStatsTable[i].Value:SetJustifyH("RIGHT");
         LeftStatsTable[i]:SetScript("OnMouseDown", function()
             UIConfig:ToggleSideStatsFrame();
         end)
 
-        RightStatsTable[i] = CreateFrame("Frame", nil, rightParentFrame, "CharacterStatFrameTemplate");
-        RightStatsTable[i]:SetPoint("LEFT", rightParentFrame, "TOPLEFT", 10, -actualOffset);
+        RightStatsTable[i] = CreateFrame("Frame", nil, rightParentFrame, "StatFrameTemplate");
+        RightStatsTable[i]:SetPoint("LEFT", rightParentFrame, "TOPLEFT", 20, -actualOffset);
         RightStatsTable[i]:SetWidth(130);
         RightStatsTable[i].OnEnterCallback = RightStatsTable[i]:GetScript("OnEnter");
+        RightStatsTable[i].Value = RightStatsTable[i]:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall");
+        RightStatsTable[i].Value:SetPoint("RIGHT", RightStatsTable[i].Label, "RIGHT", 0, 0);
+        RightStatsTable[i].Value:SetJustifyH("RIGHT");
         RightStatsTable[i]:SetScript("OnMouseDown", function()
             UIConfig:ToggleSideStatsFrame();
         end)
@@ -178,25 +184,20 @@ function UIConfig:InitializeSideStatsCategory(frameObject, accumulatedOffsetY, o
         accumulatedOffset = accumulatedOffset + offsetStepY;
         local actualOffset = accumulatedOffset;
 
-        frameObject.frames[i] = CreateFrame("Frame", nil, CSC_UIFrame.SideStatsFrame.ScrollChild, "CharacterStatFrameTemplate");
+        frameObject.frames[i] = CreateFrame("Frame", nil, CSC_UIFrame.SideStatsFrame.ScrollChild, "StatFrameTemplate");
         frameObject.frames[i]:SetPoint("LEFT", CSC_UIFrame.SideStatsFrame.ScrollChild, "TOPLEFT", 50, -actualOffset);
         frameObject.frames[i]:SetWidth(140);
+        frameObject.frames[i].Value = frameObject.frames[i]:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall");
+        frameObject.frames[i].Value:SetPoint("RIGHT", frameObject.frames[i].Label, "RIGHT", 0, 0);
+        frameObject.frames[i].Value:SetJustifyH("RIGHT");
         
         if i == 1 then
-            frameObject.frames[i].Background:SetAlpha(0.7);
+            --frameObject.frames[i].Background:SetAlpha(0.7);
             frameObject.frames[i].Label:SetText(frameObject.frameLabel);
 		    frameObject.frames[i].Label:SetJustifyH("LEFT");
         else
-            frameObject.frames[i].Background:SetAlpha(0);
-
-            -- for testing only
-            frameObject.frames[i].Value:SetText(1337);
-            frameObject.frames[i].Label:SetText("Value: ");
-            frameObject.frames[i].Label:SetWidth(frameObject.frames[i]:GetWidth() - frameObject.frames[i].Value:GetWidth() - 20);
-            frameObject.frames[i].Label:SetHeight(frameObject.frames[i]:GetHeight());
-            frameObject.frames[i].Label:SetJustifyH("LEFT");
+            --frameObject.frames[i].Background:SetAlpha(0);
         end
-        frameObject.frames[i].tooltip = "testip";
     end
     accumulatedOffset = accumulatedOffset + 10;
     
@@ -207,34 +208,80 @@ function UIConfig:InitializeSideStatsCategories()
     local offsetStepY = 15;
     local accumulatedOffsetY = 0;
     
-    accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsMelee, accumulatedOffsetY, offsetStepY);
-    accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsRanged, accumulatedOffsetY, offsetStepY);
-    accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsSpell, accumulatedOffsetY, offsetStepY);
-    accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsDefense, accumulatedOffsetY, offsetStepY);
+    if UISettingsCharacter.showSideStatsMelee then
+        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsMelee, accumulatedOffsetY, offsetStepY);
+    end
+
+    if UISettingsCharacter.showSideStatsRanged then
+        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsRanged, accumulatedOffsetY, offsetStepY);
+    end
+
+    if UISettingsCharacter.showSideStatsSpell then
+        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsSpell, accumulatedOffsetY, offsetStepY);
+    end
+
+    if UISettingsCharacter.showSideStatsDefense then
+        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsDefense, accumulatedOffsetY, offsetStepY);
+    end
+end
+
+function UIConfig:SetCharacterSideStats()
+    local unit = "player";
+
+    -- frames[1] is reserved for the category label
+
+    if UISettingsCharacter.showSideStatsMelee and SideCategoryStatsMelee.frames[1] then
+        CSC_SideFrame_SetMeleeHitChance(SideCategoryStatsMelee.frames[2], unit);
+        CSC_SideFrame_SetMeleeCritRating(SideCategoryStatsMelee.frames[3], unit);
+        CSC_SideFrame_SetMeleeHasteRating(SideCategoryStatsMelee.frames[4], unit);
+        CSC_SideFrame_SetArmorPenetration(SideCategoryStatsMelee.frames[5], unit);
+    end
+
+    if UISettingsCharacter.showSideStatsRanged and SideCategoryStatsRanged.frames[1] then
+        CSC_SideFrame_SetRangedHitChance(SideCategoryStatsRanged.frames[2], unit);
+        CSC_SideFrame_SetRangedCritRating(SideCategoryStatsRanged.frames[3], unit);
+        CSC_SideFrame_SetRangedHasteRating(SideCategoryStatsRanged.frames[4], unit);
+        CSC_SideFrame_SetArmorPenetration(SideCategoryStatsRanged.frames[5], unit);
+    end
+
+    if UISettingsCharacter.showSideStatsSpell and SideCategoryStatsSpell.frames[1] then
+        CSC_SideFrame_SetSpellHitChance(SideCategoryStatsSpell.frames[2], unit);
+        CSC_SideFrame_SetSpellCritRating(SideCategoryStatsSpell.frames[3], unit);
+        CSC_SideFrame_SetSpellHastePercent(SideCategoryStatsSpell.frames[4], unit);
+        CSC_SideFrame_SetSpellPenetration(SideCategoryStatsSpell.frames[5], unit);
+    end
+
+    if UISettingsCharacter.showSideStatsDefense and SideCategoryStatsDefense.frames[1] then
+        CSC_SideFrame_SetDefenseRating(SideCategoryStatsDefense.frames[2], unit);
+        CSC_SideFrame_SetDodgeRating(SideCategoryStatsDefense.frames[3], unit);
+        CSC_SideFrame_SetParryRating(SideCategoryStatsDefense.frames[4], unit);
+        CSC_SideFrame_SetBlockRating(SideCategoryStatsDefense.frames[5], unit);
+    end
 end
 
 function UIConfig:InitializeSideStatsFrame()
 
     CSC_UIFrame.SideStatsFrame = CreateFrame("Frame", "CSC_SideStatsFrame", PaperDollItemsFrame, "BasicFrameTemplateWithInset");
-    CSC_UIFrame.SideStatsFrame:SetSize(190, 420);
-    CSC_UIFrame.SideStatsFrame:SetPoint("LEFT", PaperDollItemsFrame, "RIGHT", -30,  32);
+    CSC_UIFrame.SideStatsFrame:SetSize(190, 423);
+    CSC_UIFrame.SideStatsFrame:SetPoint("LEFT", PaperDollItemsFrame, "RIGHT", -30,  30);
     CSC_UIFrame.SideStatsFrame.title = CSC_UIFrame.SideStatsFrame:CreateFontString(nil, "OVERLAY");
     CSC_UIFrame.SideStatsFrame.title:SetFontObject("GameFontHighlight");
     CSC_UIFrame.SideStatsFrame.title:SetPoint("CENTER", CSC_UIFrame.SideStatsFrame.TitleBg, "CENTER", 0,  0);
     CSC_UIFrame.SideStatsFrame.title:SetText("CharacterStatsTBC");
 
-    CSC_UIFrame.SideStatsFrame.ScrollFrame = CreateFrame("ScrollFrame", nil, CSC_UIFrame.SideStatsFrame, "UIPanelScrollFrameTemplate")
-    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetPoint("TOPLEFT", CSC_UIFrame.SideStatsFrame, "TOPLEFT", -35, -30)
-    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetPoint("BOTTOMRIGHT", CSC_UIFrame.SideStatsFrame, "BOTTOMRIGHT", -35, 10)
+    CSC_UIFrame.SideStatsFrame.ScrollFrame = CreateFrame("ScrollFrame", nil, CSC_UIFrame.SideStatsFrame, "UIPanelScrollFrameTemplate");
+    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetPoint("TOPLEFT", CSC_UIFrame.SideStatsFrame, "TOPLEFT", -35, -30);
+    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetPoint("BOTTOMRIGHT", CSC_UIFrame.SideStatsFrame, "BOTTOMRIGHT", -35, 10);
 
-    CSC_UIFrame.SideStatsFrame.ScrollChild = CreateFrame("Frame", nil, CSC_UIFrame.SideStatsFrame.ScrollFrame)
-    CSC_UIFrame.SideStatsFrame.ScrollChild:SetSize(200, 420)
-    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetScrollChild(CSC_UIFrame.SideStatsFrame.ScrollChild)
+    CSC_UIFrame.SideStatsFrame.ScrollChild = CreateFrame("Frame", nil, CSC_UIFrame.SideStatsFrame.ScrollFrame);
+    CSC_UIFrame.SideStatsFrame.ScrollChild:SetSize(200, 420);
+    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetScrollChild(CSC_UIFrame.SideStatsFrame.ScrollChild);
+    --CSC_UIFrame.SideStatsFrame.ScrollFrame:SetScript("OnMouseWheel", function() end);
 
     -- TODO: implement
     CSC_UIFrame.SideStatsFrame.CloseButton:HookScript("OnClick", function()
         -- serialize noShow flag
-        print("CSC_UIFrame.SideStatsFrame.CloseButton");
+        --print("CSC_UIFrame.SideStatsFrame.CloseButton");
     end)
 
     --[[
@@ -248,7 +295,7 @@ function UIConfig:InitializeSideStatsFrame()
 
     PaperDollItemsFrame:HookScript("OnShow", function()
         -- if noShow flag is set, dont show
-        print("PaperDollItemsFrame:HookScript(OnShow)");
+        --print("PaperDollItemsFrame:HookScript(OnShow)");
     end)
 
     UIConfig:InitializeSideStatsCategories();
@@ -283,7 +330,7 @@ end
 function UIConfig:UpdateStats()
     UIConfig:SetCharacterStats(LeftStatsTable, statsDropdownList[UISettingsCharacter.selectedLeftStatsCategory]);
     UIConfig:SetCharacterStats(RightStatsTable, statsDropdownList[UISettingsCharacter.selectedRightStatsCategory]);
-    -- TODO: Update side frame stats
+    UIConfig:SetCharacterSideStats();
 end
 
 local function OnClickLeftStatsDropdown(self)
