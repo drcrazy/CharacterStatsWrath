@@ -6,7 +6,6 @@ core.UIConfig = {};
 -- Defaults
 UISettingsGlobal = {
     useBlizzardBlockValue = false;
-    useTransparentStatsBackground = true;
 }
 
 UISettingsCharacter = {
@@ -14,6 +13,7 @@ UISettingsCharacter = {
     selectedRightStatsCategory = 2;
     showStatsFromArgentDawnItems = true;
     -- side panel stats options
+    sideStatsFrameHidden = false;
     showSideStatsMelee = true;
     showSideStatsRanged = true;
     showSideStatsSpell = true;
@@ -59,15 +59,6 @@ local SideCategoryStatsDefense = {
 };
 
 local function CSC_ResetStatFrames(statFrames)
-    
-    local statFrameDefaultAlpha = 0.3;
-    if UISettingsGlobal.useTransparentStatsBackground then
-        statFrameDefaultAlpha = 0;
-    end
-
-    if __DEBUG__ then
-        statFrameDefaultAlpha = 1;
-    end
 
     for i=1, NUM_STATS_TO_SHOW, 1 do
         statFrames[i]:Hide();
@@ -75,7 +66,6 @@ local function CSC_ResetStatFrames(statFrames)
         statFrames[i].tooltip = nil;
         statFrames[i].tooltip2 = nil;
         statFrames[i].tooltip3 = nil;
-        --statFrames[i].Background:SetVertexColor(0, 0, 0, statFrameDefaultAlpha);
     end
 end
 
@@ -192,11 +182,8 @@ function UIConfig:InitializeSideStatsCategory(frameObject, accumulatedOffsetY, o
         frameObject.frames[i].Value:SetJustifyH("RIGHT");
         
         if i == 1 then
-            --frameObject.frames[i].Background:SetAlpha(0.7);
             frameObject.frames[i].Label:SetText(frameObject.frameLabel);
 		    frameObject.frames[i].Label:SetJustifyH("LEFT");
-        else
-            --frameObject.frames[i].Background:SetAlpha(0);
         end
     end
     accumulatedOffset = accumulatedOffset + 10;
@@ -278,24 +265,14 @@ function UIConfig:InitializeSideStatsFrame()
     CSC_UIFrame.SideStatsFrame.ScrollFrame:SetScrollChild(CSC_UIFrame.SideStatsFrame.ScrollChild);
     --CSC_UIFrame.SideStatsFrame.ScrollFrame:SetScript("OnMouseWheel", function() end);
 
-    -- TODO: implement
     CSC_UIFrame.SideStatsFrame.CloseButton:HookScript("OnClick", function()
-        -- serialize noShow flag
-        --print("CSC_UIFrame.SideStatsFrame.CloseButton");
+        UISettingsCharacter.sideStatsFrameHidden = true;
     end)
-
-    --[[
-    CSC_UIFrame.SideStatsFrame:SetScript("OnShow", function ()
-        print("Show SideStatsFrame");
-    end)
-    CSC_UIFrame.SideStatsFrame:SetScript("OnHide", function ()
-        print("Hide SideStatsFrame");
-    end)
-    --]]
 
     PaperDollItemsFrame:HookScript("OnShow", function()
-        -- if noShow flag is set, dont show
-        --print("PaperDollItemsFrame:HookScript(OnShow)");
+       if UISettingsCharacter.sideStatsFrameHidden then
+            CSC_UIFrame.SideStatsFrame:Hide();
+       end
     end)
 
     UIConfig:InitializeSideStatsCategories();
@@ -387,24 +364,26 @@ end
 function UIConfig:ToggleSideStatsFrame()
     if CSC_UIFrame.SideStatsFrame:IsVisible() then
         CSC_UIFrame.SideStatsFrame:Hide();
+        UISettingsCharacter.sideStatsFrameHidden = true;
     else 
         CSC_UIFrame.SideStatsFrame:Show();
+        UISettingsCharacter.sideStatsFrameHidden = false;
     end
 end
 
 function UIConfig:SetupConfigInterface()
 
     CSC_ConfigFrame = CreateFrame("Frame", "CSC_InterfaceOptionsPanel", UIParent);
-    CSC_ConfigFrame.name = "CharacterStatsClassic";
+    CSC_ConfigFrame.name = "CharacterStatsTBC";
     InterfaceOptions_AddCategory(CSC_ConfigFrame);
 
     -- Title and font
-    CSC_ConfigFrame.title = CreateFrame("Frame", "CharacterStatsClassic", CSC_ConfigFrame);
+    CSC_ConfigFrame.title = CreateFrame("Frame", CSC_ConfigFrame.name, CSC_ConfigFrame);
     CSC_ConfigFrame.title:SetPoint("TOPLEFT", CSC_ConfigFrame, "TOPLEFT", 10, -10);
     CSC_ConfigFrame.title:SetWidth(300);
     CSC_ConfigFrame.titleString = CSC_ConfigFrame.title:CreateFontString(nil, "OVERLAY", "GameFontNormal");
     CSC_ConfigFrame.titleString:SetPoint("TOPLEFT", CSC_ConfigFrame, "TOPLEFT", 10, -10);
-    CSC_ConfigFrame.titleString:SetText('|cff00c0ffCharacterStatsClassic|r');
+    CSC_ConfigFrame.titleString:SetText('|cff00c0ffCharacterStatsTBC|r');
     CSC_ConfigFrame.titleString:SetFont("Fonts\\FRIZQT__.tff", 20, "OUTLINE");
 
     -- Checkboxes
@@ -426,14 +405,38 @@ function UIConfig:SetupConfigInterface()
         UISettingsCharacter.showStatsFromArgentDawnItems = not UISettingsCharacter.showStatsFromArgentDawnItems;
     end);
 
-    -- Stats frames alpha checkbox
-    CSC_ConfigFrame.chkBtnStatsFramesAlpha = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
-    CSC_ConfigFrame.chkBtnStatsFramesAlpha:SetPoint("TOPLEFT", 20, -80);
-    CSC_ConfigFrame.chkBtnStatsFramesAlpha.text:SetText("Use a transparent background for the stats frames.");
-    CSC_ConfigFrame.chkBtnStatsFramesAlpha:SetChecked(UISettingsGlobal.useTransparentStatsBackground);
-    CSC_ConfigFrame.chkBtnStatsFramesAlpha:SetScript("OnClick", 
+    -- Side Stats frame options
+    CSC_ConfigFrame.chkBtnShowSideStatsMelee = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
+    CSC_ConfigFrame.chkBtnShowSideStatsMelee:SetPoint("TOPLEFT", 20, -110);
+    CSC_ConfigFrame.chkBtnShowSideStatsMelee.text:SetText("Show Melee Category in the side stats window (Requires UI reload)");
+    CSC_ConfigFrame.chkBtnShowSideStatsMelee:SetChecked(UISettingsCharacter.showSideStatsMelee);
+    CSC_ConfigFrame.chkBtnShowSideStatsMelee:SetScript("OnClick", 
     function()
-        UISettingsGlobal.useTransparentStatsBackground = not UISettingsGlobal.useTransparentStatsBackground;
+        UISettingsCharacter.showSideStatsMelee = not UISettingsCharacter.showSideStatsMelee;
+    end);
+    CSC_ConfigFrame.chkBtnShowSideStatsRanged = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
+    CSC_ConfigFrame.chkBtnShowSideStatsRanged:SetPoint("TOPLEFT", 20, -135);
+    CSC_ConfigFrame.chkBtnShowSideStatsRanged.text:SetText("Show Ranged Category in the side stats window (Requires UI reload)");
+    CSC_ConfigFrame.chkBtnShowSideStatsRanged:SetChecked(UISettingsCharacter.showSideStatsRanged);
+    CSC_ConfigFrame.chkBtnShowSideStatsRanged:SetScript("OnClick", 
+    function()
+        UISettingsCharacter.showSideStatsRanged = not UISettingsCharacter.showSideStatsRanged;
+    end);
+    CSC_ConfigFrame.chkBtnShowSideStatsSpell = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
+    CSC_ConfigFrame.chkBtnShowSideStatsSpell:SetPoint("TOPLEFT", 20, -160);
+    CSC_ConfigFrame.chkBtnShowSideStatsSpell.text:SetText("Show Spell Category in the side stats window (Requires UI reload)");
+    CSC_ConfigFrame.chkBtnShowSideStatsSpell:SetChecked(UISettingsCharacter.showSideStatsSpell);
+    CSC_ConfigFrame.chkBtnShowSideStatsSpell:SetScript("OnClick", 
+    function()
+        UISettingsCharacter.showSideStatsSpell = not UISettingsCharacter.showSideStatsSpell;
+    end);
+    CSC_ConfigFrame.chkBtnShowSideStatsDefense = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
+    CSC_ConfigFrame.chkBtnShowSideStatsDefense:SetPoint("TOPLEFT", 20, -185);
+    CSC_ConfigFrame.chkBtnShowSideStatsDefense.text:SetText("Show Defense Category in the side stats window (Requires UI reload)");
+    CSC_ConfigFrame.chkBtnShowSideStatsDefense:SetChecked(UISettingsCharacter.showSideStatsDefense);
+    CSC_ConfigFrame.chkBtnShowSideStatsDefense:SetScript("OnClick", 
+    function()
+        UISettingsCharacter.showSideStatsDefense = not UISettingsCharacter.showSideStatsDefense;
     end);
     
 end
@@ -459,12 +462,6 @@ local function SerializeGlobalDatabase()
         CharacterStatsTbcDB.useBlizzardBlockValue = UISettingsGlobal.useBlizzardBlockValue;
     else
         UISettingsGlobal.useBlizzardBlockValue = CharacterStatsTbcDB.useBlizzardBlockValue;
-    end
-
-    if (CharacterStatsTbcDB.useTransparentStatsBackground == nil) then
-        CharacterStatsTbcDB.useTransparentStatsBackground = UISettingsGlobal.useTransparentStatsBackground;
-    else
-        UISettingsGlobal.useTransparentStatsBackground = CharacterStatsTbcDB.useTransparentStatsBackground;
     end
 end
 
@@ -492,6 +489,35 @@ local function SerializeCharacterDatabase()
         CharacterStatsTbcCharacterDB.showStatsFromArgentDawnItems = UISettingsCharacter.showStatsFromArgentDawnItems;
     else
         UISettingsCharacter.showStatsFromArgentDawnItems = CharacterStatsTbcCharacterDB.showStatsFromArgentDawnItems;
+    end
+
+    -- Side Stats frame status
+    if (CharacterStatsTbcCharacterDB.sideStatsFrameHidden == nil) then
+        CharacterStatsTbcCharacterDB.sideStatsFrameHidden = UISettingsCharacter.sideStatsFrameHidden;
+    else
+        UISettingsCharacter.sideStatsFrameHidden = CharacterStatsTbcCharacterDB.sideStatsFrameHidden;
+    end
+
+    -- Side Stats frame category visibilities
+    if (CharacterStatsTbcCharacterDB.showSideStatsMelee == nil) then
+        CharacterStatsTbcCharacterDB.showSideStatsMelee = UISettingsCharacter.showSideStatsMelee;
+    else
+        UISettingsCharacter.showSideStatsMelee = CharacterStatsTbcCharacterDB.showSideStatsMelee;
+    end
+    if (CharacterStatsTbcCharacterDB.showSideStatsRanged == nil) then
+        CharacterStatsTbcCharacterDB.showSideStatsRanged = UISettingsCharacter.showSideStatsRanged;
+    else
+        UISettingsCharacter.showSideStatsRanged = CharacterStatsTbcCharacterDB.showSideStatsRanged;
+    end
+    if (CharacterStatsTbcCharacterDB.showSideStatsSpell == nil) then
+        CharacterStatsTbcCharacterDB.showSideStatsSpell = UISettingsCharacter.showSideStatsSpell;
+    else
+        UISettingsCharacter.showSideStatsSpell = CharacterStatsTbcCharacterDB.showSideStatsSpell;
+    end
+    if (CharacterStatsTbcCharacterDB.showSideStatsDefense == nil) then
+        CharacterStatsTbcCharacterDB.showSideStatsDefense = UISettingsCharacter.showSideStatsDefense;
+    else
+        UISettingsCharacter.showSideStatsDefense = CharacterStatsTbcCharacterDB.showSideStatsDefense;
     end
 end
 

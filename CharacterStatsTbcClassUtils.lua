@@ -82,6 +82,7 @@ function CSC_GetPriestBonusHealingModifierFromTalents()
 end
 
 -- returns the crit bonus from Holy Power
+-- Already counted by default
 function CSC_GetPaladinCritStatsFromTalents()
 	-- Holy Power (1, 2, 3, 4, 5)%
 	local spellRank = select(5, GetTalentInfo(1, 13));
@@ -115,7 +116,7 @@ end
 -- Checks if spellId is Blessing of Wisdom
 function CSC_IsBoWSpellId(spellId)
 
-	if (spellId == 19742 or spellId == 19850 or spellId == 19852 or spellId == 19853 or spellId == 19854 or spellId == 25290) then
+	if (spellId == 19742 or spellId == 19850 or spellId == 19852 or spellId == 19853 or spellId == 19854 or spellId == 25290 or spellId == 27142 or spellId == 25894 or spellId == 25918 or spellId == 27143) then
 		return true;
 	end
 
@@ -186,11 +187,11 @@ function CSC_GetShamanTidalMasteryCrit()
 end
 
 -- ITEMS AND ENCHANTS RELATED
--- TODO: Check the modifier
 function CSC_GetMP5ModifierFromTalents(unit)
     local unitClassId = select(3, UnitClass(unit));
 	local spellRank = 0;
 
+	-- All of these spells have 3 ranks (10%, 20%, 30%)
 	if unitClassId == CSC_PRIEST_CLASS_ID then
 		-- Meditation
         spellRank = select(5, GetTalentInfo(1, 9));
@@ -198,22 +199,22 @@ function CSC_GetMP5ModifierFromTalents(unit)
 		-- Arcane Meditation
 		spellRank = select(5, GetTalentInfo(1, 12));
 	elseif unitClassId == CSC_DRUID_CLASS_ID then
-		-- Reflection
+		-- Intensity
         spellRank = select(5, GetTalentInfo(3, 6));
 	end
 	
-	local modifier = spellRank * 0.05;
+	local modifier = spellRank * 0.1;
 
     return modifier;
 end
 
-function CSC_GetMP5ModifierFromSetBonus(unit)
+function CSC_GetMP5FromSetBonus(unit)
 	local unitClassId = select(3, UnitClass(unit));
-	local modifier = 0;
+	local mp5 = 0;
 	
 	-- not Druid or Priest
 	if unitClassId ~= CSC_DRUID_CLASS_ID and unitClassId ~= CSC_PRIEST_CLASS_ID then
-		return modifier;
+		return mp5;
 	end
 	
 	local firstItemslotIndex = 1;
@@ -231,10 +232,10 @@ function CSC_GetMP5ModifierFromSetBonus(unit)
     end
 
     if equippedSetItems >= 3 then
-        modifier = 0.15;
+        mp5 = 20;
 	end
 
-    return modifier;
+    return mp5;
 end
 
 function CSC_GetShamanT2SpellCrit(unit)
