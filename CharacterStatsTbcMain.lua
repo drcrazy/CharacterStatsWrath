@@ -30,7 +30,6 @@ CharacterStatsTbcFrame:SetScript("OnEvent",
 
         if event == "VARIABLES_LOADED" then
             core.UIConfig:UpdateStats();
-            print(event);
         end
 
         if args[1] == "player" then
@@ -55,4 +54,16 @@ CharacterStatsTbcFrame:SetScript("OnEvent",
 function CSC_QueuedUpdate(self)
     self:SetScript("OnUpdate", nil);
     core.UIConfig:UpdateStats();
+end
+
+-- Exposing global functions for showing/hiding the stats panel. For compatibility with other addons
+function CSC_HideStatsPanel()
+    core.UIConfig.CharacterStatsPanel:Hide();
+    core.UIConfig:SetStatsPanelVisibile(false);
+end
+
+function CSC_ShowStatsPanel()
+    core.UIConfig.CharacterStatsPanel:Show();
+    core.UIConfig:UpdateStats();
+    core.UIConfig:SetStatsPanelVisibile(true);
 end

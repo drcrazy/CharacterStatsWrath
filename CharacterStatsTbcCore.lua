@@ -797,6 +797,7 @@ function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
 		if not hitChance then
 			hitChance = 0;
 		end
+		
 		ratingBonus = ratingBonus + hitChance;
 		rating = rating + (10*hitChance);
 	elseif ( ratingIndex == CR_HIT_SPELL ) then
@@ -804,7 +805,7 @@ function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
 		if not spellHitChance then
 			spellHitChance = 0;
 		end
-
+		
 		ratingBonus = ratingBonus + spellHitChance;
 		statFrame.spellHitGearTalents = ratingBonus;
 		rating = rating + (10*spellHitChance);

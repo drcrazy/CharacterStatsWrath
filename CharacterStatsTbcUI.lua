@@ -6,6 +6,7 @@ core.UIConfig = {};
 -- Defaults
 UISettingsGlobal = {
     useBlizzardBlockValue = false;
+    statsPanelHidden = false;
 }
 
 UISettingsCharacter = {
@@ -441,11 +442,17 @@ function UIConfig:SetupConfigInterface()
     
 end
 
+function UIConfig:SetStatsPanelVisibile(isVisible)
+    UISettingsGlobal.statsPanelHidden = not isVisible;
+end
+
 -- Hook a custom function in order to extend the functionality of the default ToggleCharacter function
 local function CSC_ToggleCharacterPostHook(tab, onlyShow)
     if (tab == "PaperDollFrame") then
-        CSC_UIFrame.CharacterStatsPanel:Show();
-        CSC_UIFrame:UpdateStats();
+        if (not UISettingsGlobal.statsPanelHidden) then
+            CSC_UIFrame.CharacterStatsPanel:Show();
+            CSC_UIFrame:UpdateStats();
+        end
     else
         CSC_UIFrame.CharacterStatsPanel:Hide();
     end
@@ -462,6 +469,13 @@ local function SerializeGlobalDatabase()
         CharacterStatsTbcDB.useBlizzardBlockValue = UISettingsGlobal.useBlizzardBlockValue;
     else
         UISettingsGlobal.useBlizzardBlockValue = CharacterStatsTbcDB.useBlizzardBlockValue;
+    end
+
+    -- Stats frame visibility
+    if (CharacterStatsTbcDB.statsPanelHidden == nil) then
+        CharacterStatsTbcDB.statsPanelHidden = UISettingsGlobal.statsPanelHidden;
+    else
+        UISettingsGlobal.statsPanelHidden = CharacterStatsTbcDB.statsPanelHidden;
     end
 end
 
