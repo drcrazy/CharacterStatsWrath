@@ -794,22 +794,28 @@ function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
 
 	if ( ratingIndex == CR_HIT_MELEE ) then
 		local hitChance = GetHitModifier(); -- includes talents, doesn't include hit raiting from gear
+		local combatRatingMult = CSC_GetCombatRatingPerUnitBonus(unit, CSC_COMBAT_RATING_HIT);
+
 		if not hitChance then
 			hitChance = 0;
 		end
 		
 		ratingBonus = ratingBonus + hitChance;
-		rating = rating + (10*hitChance);
+		rating = rating + (combatRatingMult*hitChance);
 	elseif ( ratingIndex == CR_HIT_SPELL ) then
-		local spellHitChance = GetSpellHitModifier();
+		local spellHitChance = GetSpellHitModifier() / 7; -- BUG ON BLIZZARD's side. returns 7 for each 1% hit. Dirty fix for now
+		local combatRatingMult = CSC_GetCombatRatingPerUnitBonus(unit, CSC_COMBAT_RATING_SPELL_HIT);
+
 		if not spellHitChance then
 			spellHitChance = 0;
 		end
 		
 		ratingBonus = ratingBonus + spellHitChance;
 		statFrame.spellHitGearTalents = ratingBonus;
-		rating = rating + (10*spellHitChance);
+		rating = rating + (combatRatingMult*spellHitChance);
 	end
+
+	rating = format("%.2f", rating);
 
 	statFrame.unit = unit;
 	statFrame.ratingIndex = ratingIndex;

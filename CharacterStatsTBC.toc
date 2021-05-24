@@ -1,6 +1,6 @@
 ## Interface: 20501
 ## Author: Peter Getov
-## Version: 0.0.6b
+## Version: 0.0.7b
 ## Title: |cff00aeffCharacterStatsTBC|r
 ## Notes: Advanced Character Stats
 ## DefaultState:  enabled
@@ -21,6 +21,7 @@ Localization\Localization_br.lua
 CharacterStatsTbcConstants.lua
 CharacterStatsTbcUI.lua
 CharacterStatsTbcMain.lua
+CharacterStatsTbcUtils.lua
 CharacterStatsTbcCore.lua
 CharacterStatsTbcClassUtils.lua
 CharacterStatsTbcCallbacks.lua
