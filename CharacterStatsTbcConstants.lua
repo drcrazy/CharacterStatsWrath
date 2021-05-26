@@ -1,4 +1,4 @@
-__DEBUG__ = true;
+__DEBUG__ = false;
 
 -- Class ids
 CSC_WARRIOR_CLASS_ID 		= 1;
