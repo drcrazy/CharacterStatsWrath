@@ -738,14 +738,14 @@ function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
 		ratingBonus = ratingBonus + hitChance;
 		rating = rating + (combatRatingMult*hitChance);
 	elseif ( ratingIndex == CR_HIT_SPELL ) then
-		local spellHitChance = GetSpellHitModifier();
+		local spellHitChance = CSC_GetSpellHitModifier(unit);
 		local combatRatingMult = CSC_GetCombatRatingPerUnitBonus(unit, CSC_COMBAT_RATING_SPELL_HIT);
 
 		if not spellHitChance then
 			spellHitChance = 0;
 		end
 
-		spellHitChance = spellHitChance / 7; -- BUG ON BLIZZARD's side. returns 7 for each 1% hit. Dirty fix for now
+		--spellHitChance = spellHitChance / 7; -- BUG ON BLIZZARD's side. returns 7 for each 1% hit. Dirty fix for now
 
 		if (unitClassId == CSC_SHAMAN_CLASS_ID) then
 			local hitFromElementalPrecision = CSC_GetShamanHitFromElementalPrecision();
@@ -1318,12 +1318,12 @@ function CSC_SideFrame_SetSpellHitChance(statFrame, unit)
 		GameTooltip:Hide()
 	end)
 	
-	local spellHitChance = GetSpellHitModifier();
+	local spellHitChance = CSC_GetSpellHitModifier(unit);
 	if not spellHitChance then
 		spellHitChance = 0;
 	end
 
-	spellHitChance = spellHitChance / 7; -- BUG ON BLIZZARD's side. returns 7 for each 1% hit. Dirty fix for now
+	--spellHitChance = spellHitChance / 7; -- BUG ON BLIZZARD's side. returns 7 for each 1% hit. Dirty fix for now
 
 	local hitRatingBonus = GetCombatRatingBonus(CR_HIT_SPELL); -- hit rating in % (hit chance) (from gear sources, doesn't seem to include talents)
 	local totalHit = spellHitChance + hitRatingBonus;
