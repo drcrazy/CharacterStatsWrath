@@ -34,7 +34,7 @@ function CSC_GetSpellHitModifier(unit)
 		local spellRank = select(5, GetTalentInfo(3, 6)); -- Nature's Guidance
 		spellHit = spellRank; -- 1% per rank
 	elseif unitClassId == CSC_DRUID_CLASS_ID then
-		local spellRank = select(5, GetTalentInfo(3, 6)); -- Balance of power
+		local spellRank = select(5, GetTalentInfo(1, 16)); -- Balance of power
 		spellHit = spellRank * 2; -- 2% per rank
 	end
 
