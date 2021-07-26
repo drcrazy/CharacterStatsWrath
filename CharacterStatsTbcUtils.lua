@@ -27,9 +27,6 @@ function CSC_GetSpellHitModifier(unit)
 	if unitClassId == CSC_PALADIN_CLASS_ID then
 		local spellRank = select(5, GetTalentInfo(2, 3)); -- Precision
 		spellHit = spellRank; -- 1% per rank
-	elseif unitClassId == CSC_PRIEST_CLASS_ID then
-		local spellRank = select(5, GetTalentInfo(3, 5)); -- Shadow Focus
-		spellHit = spellRank * 2; -- 2% per rank
 	elseif unitClassId == CSC_SHAMAN_CLASS_ID then
 		local spellRank = select(5, GetTalentInfo(3, 6)); -- Nature's Guidance
 		spellHit = spellRank; -- 1% per rank
