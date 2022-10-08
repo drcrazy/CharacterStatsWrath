@@ -277,7 +277,7 @@ function UIConfig:InitializeSideStatsFrame()
     CSC_UIFrame.SideStatsFrame.title = CSC_UIFrame.SideStatsFrame:CreateFontString(nil, "OVERLAY");
     CSC_UIFrame.SideStatsFrame.title:SetFontObject("GameFontHighlight");
     CSC_UIFrame.SideStatsFrame.title:SetPoint("CENTER", CSC_UIFrame.SideStatsFrame.TitleBg, "CENTER", 0,  0);
-    CSC_UIFrame.SideStatsFrame.title:SetText("CharacterStatsTBC");
+    CSC_UIFrame.SideStatsFrame.title:SetText("CharacterStatsWrath");
 
     CSC_UIFrame.SideStatsFrame.ScrollFrame = CreateFrame("ScrollFrame", nil, CSC_UIFrame.SideStatsFrame, "UIPanelScrollFrameTemplate");
     CSC_UIFrame.SideStatsFrame.ScrollFrame:SetPoint("TOPLEFT", CSC_UIFrame.SideStatsFrame, "TOPLEFT", -35, -30);
@@ -403,7 +403,7 @@ end
 function UIConfig:SetupConfigInterface()
 
     CSC_ConfigFrame = CreateFrame("Frame", "CSC_InterfaceOptionsPanel", UIParent);
-    CSC_ConfigFrame.name = "CharacterStatsTBC";
+    CSC_ConfigFrame.name = "CharacterStatsWrath";
     InterfaceOptions_AddCategory(CSC_ConfigFrame);
 
     -- Title and font
@@ -412,7 +412,7 @@ function UIConfig:SetupConfigInterface()
     CSC_ConfigFrame.title:SetWidth(300);
     CSC_ConfigFrame.titleString = CSC_ConfigFrame.title:CreateFontString(nil, "OVERLAY", "GameFontNormal");
     CSC_ConfigFrame.titleString:SetPoint("TOPLEFT", CSC_ConfigFrame, "TOPLEFT", 10, -10);
-    CSC_ConfigFrame.titleString:SetText('|cff00c0ffCharacterStatsTBC|r');
+    CSC_ConfigFrame.titleString:SetText('|cff00c0ffCharacterStatsWrath|r');
     CSC_ConfigFrame.titleString:SetFont("Fonts\\FRIZQT__.tff", 20, "OUTLINE");
 
     -- Checkboxes
@@ -571,13 +571,13 @@ dbLoader:RegisterEvent("PLAYER_LOGOUT");
 -- ADDON_LOADED is called after the code of the addon is being executed
 -- Therefore I have to call any setup-functions dependent on the DB after the event (UIConfig:SetupDropdown())
 function dbLoader:OnEvent(event, arg1)
-    if (event == "ADDON_LOADED" and arg1 == "CharacterStatsTBC") then
+    if (event == "ADDON_LOADED" and arg1 == "CharacterStatsWrath") then
         SerializeGlobalDatabase();
         SerializeCharacterDatabase();
         UIConfig:CreateMenu();
     elseif (event == "PLAYER_LOGOUT") then
-        CharacterStatsTbcDB = UISettingsGlobal;
-        CharacterStatsTbcCharacterDB = UISettingsCharacter;
+        CharacterStatsWrathDB = UISettingsGlobal;
+        CharacterStatsWrathCharacterDB = UISettingsCharacter;
     end
 end
 

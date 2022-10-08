@@ -1,26 +1,26 @@
 -- Access the namespace
 local _, core = ...;
 
-local CharacterStatsTbcFrame = CreateFrame("Frame");
-CharacterStatsTbcFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
-CharacterStatsTbcFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-CharacterStatsTbcFrame:RegisterEvent("UNIT_AURA");
-CharacterStatsTbcFrame:RegisterEvent("PLAYER_DAMAGE_DONE_MODS");
-CharacterStatsTbcFrame:RegisterEvent("SKILL_LINES_CHANGED");
-CharacterStatsTbcFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
-CharacterStatsTbcFrame:RegisterEvent("UNIT_DAMAGE");
-CharacterStatsTbcFrame:RegisterEvent("UNIT_ATTACK_SPEED");
-CharacterStatsTbcFrame:RegisterEvent("UNIT_RANGEDDAMAGE");
-CharacterStatsTbcFrame:RegisterEvent("UNIT_ATTACK");
-CharacterStatsTbcFrame:RegisterEvent("UNIT_RESISTANCES");
-CharacterStatsTbcFrame:RegisterEvent("UNIT_STATS");
-CharacterStatsTbcFrame:RegisterEvent("UNIT_MAXHEALTH");
-CharacterStatsTbcFrame:RegisterEvent("UNIT_ATTACK_POWER");
-CharacterStatsTbcFrame:RegisterEvent("UNIT_RANGED_ATTACK_POWER");
-CharacterStatsTbcFrame:RegisterEvent("COMBAT_RATING_UPDATE");
-CharacterStatsTbcFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
+local CharacterStatsWrathFrame = CreateFrame("Frame");
+CharacterStatsWrathFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
+CharacterStatsWrathFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_AURA");
+CharacterStatsWrathFrame:RegisterEvent("PLAYER_DAMAGE_DONE_MODS");
+CharacterStatsWrathFrame:RegisterEvent("SKILL_LINES_CHANGED");
+CharacterStatsWrathFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_DAMAGE");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_ATTACK_SPEED");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_RANGEDDAMAGE");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_ATTACK");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_RESISTANCES");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_STATS");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_MAXHEALTH");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_ATTACK_POWER");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_RANGED_ATTACK_POWER");
+CharacterStatsWrathFrame:RegisterEvent("COMBAT_RATING_UPDATE");
+CharacterStatsWrathFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 
-CharacterStatsTbcFrame:SetScript("OnEvent",
+CharacterStatsWrathFrame:SetScript("OnEvent",
     function(self, event, ...)
 
         local args = {...};
