@@ -24,10 +24,7 @@ function CSC_GetSpellHitModifier(unit)
 	local spellHit = 0;
 	local unitClassId = select(3, UnitClass(unit));
 
-	if unitClassId == CSC_PALADIN_CLASS_ID then
-		local spellRank = select(5, GetTalentInfo(2, 3)); -- Precision
-		spellHit = spellRank; -- 1% per rank
-	elseif unitClassId == CSC_SHAMAN_CLASS_ID then
+	if unitClassId == CSC_SHAMAN_CLASS_ID then
 		local spellRank = select(5, GetTalentInfo(3, 6)); -- Nature's Guidance
 		spellHit = spellRank; -- 1% per rank
 	elseif unitClassId == CSC_DRUID_CLASS_ID then
