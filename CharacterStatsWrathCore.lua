@@ -118,11 +118,11 @@ function CSC_GetPlayerMissChances(unit, playerHitChance)
 	
 	local hitChance = playerHitChance;
 	local level = UnitLevel(unit);
-	local bossLevel = 73;
+	local bossLevel = 83;
 	local playerWeaponSkill = level * 5;
 	local bossDefense = bossLevel * 5;
 
-	-- Boss (level 73)
+	-- Boss (level 83)
 	if (bossDefense - playerWeaponSkill >= 11) then
 		missChanceVsBoss = 5 + (bossDefense - playerWeaponSkill) * 0.2;
 	end
@@ -154,7 +154,7 @@ function CSC_GetPlayerCritCap(unit, ratingIndex)
 	local missChanceVsNPC, missChanceVsBoss, missChanceVsPlayer, dwMissChanceVsNpc, dwMissChanceVsBoss, dwMissChanceVsPlayer = CSC_GetPlayerMissChances(unit, totalHit);
 	
 	local playerWeaponSkill = UnitLevel(unit) * 5;
-	local bossDefense = 73 * 5;
+	local bossDefense = 83 * 5;
 	local critSuppression = 4.8;
 	local dodgeChance = 5 + (bossDefense - playerWeaponSkill) * 0,1;
 	local glancingChance = math.max(0, 6 + (bossDefense - playerWeaponSkill) * 1.2);
@@ -694,24 +694,6 @@ function CSC_PaperDollFrame_SetSpellCritChance(statFrame, unit)
 	statFrame.unitClassId = unitClassId;
 
 	CSC_PaperDollFrame_SetLabelAndText(statFrame, SPELL_CRIT_CHANCE, maxSpellCrit, true);
-end
-
-function CSC_PaperDollFrame_SetHitChance(statFrame, unit)
-	
-	statFrame:SetScript("OnEnter", CSC_CharacterHitChanceFrame_OnEnter)
-	statFrame:SetScript("OnLeave", function()
-		GameTooltip:Hide()
-	end)
-	
-	local hitChance = GetHitModifier();
-	
-	if not hitChance then
-		hitChance = 0;
-	end
-
-	local hitChanceText = hitChance;
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_HIT_CHANCE, hitChanceText, true);
-	statFrame.hitChance = hitChance;
 end
 
 function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
@@ -1367,11 +1349,11 @@ function CSC_SideFrame_SetChanceToBeCrittedBy70(statFrame, unit)
 	local bonusFromTalents = 0;
 
 	if unitClassId == CSC_DRUID_CLASS_ID then
-		bonusFromTalents = select(5, GetTalentInfo(2, 16)); -- Survival of the Fittest
+		bonusFromTalents = select(5, GetTalentInfo(2, 18)); -- Survival of the Fittest
 	end
 
     local critChance = (base + modifier)*0.04 + GetCombatRatingBonus(16) + bonusFromTalents; 
-	local critChance70 = 19 - critChance;
+	local critChance70 = 21 - critChance;
 	local critChance70txt = format("%.2F%%", critChance70);
 	
     if critChance70 <= 0 then
@@ -1380,8 +1362,8 @@ function CSC_SideFrame_SetChanceToBeCrittedBy70(statFrame, unit)
         critChance70txt = RED_FONT_COLOR_CODE..critChance70txt..FONT_COLOR_CODE_CLOSE;
 	end
 	
-	statFrame.tooltip = "Chance to be critically hit by level 70";
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Crit by lvl 70", critChance70txt, false);
+	statFrame.tooltip = "Chance to be critically hit by level 80";
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Crit by lvl 80", critChance70txt, false);
 end
 
 function CSC_SideFrame_SetChanceToBeCrittedBy73(statFrame, unit)
@@ -1390,11 +1372,11 @@ function CSC_SideFrame_SetChanceToBeCrittedBy73(statFrame, unit)
 	local bonusFromTalents = 0;
 
 	if unitClassId == CSC_DRUID_CLASS_ID then
-		bonusFromTalents = select(5, GetTalentInfo(2, 16)); -- Survival of the Fittest
+		bonusFromTalents = select(5, GetTalentInfo(2, 18)); -- Survival of the Fittest
 	end
 
-	local critChance = (base + modifier)*0.04 + GetCombatRatingBonus(16) + bonusFromTalents;
-	local critChance73 = 19.6 - critChance;
+	local critChance = (base + modifier)*0.04 + GetCombatRatingBonus(CR_RESILIENCE_CRIT_TAKEN) + bonusFromTalents;
+	local critChance73 = 21.6 - critChance;
 	local critChance73txt = format("%.2F%%", critChance73);
 	
     if critChance73 <= 0 then
@@ -1403,8 +1385,8 @@ function CSC_SideFrame_SetChanceToBeCrittedBy73(statFrame, unit)
         critChance73txt = RED_FONT_COLOR_CODE..critChance73txt..FONT_COLOR_CODE_CLOSE;
 	end
 	
-	statFrame.tooltip = "Chance to be critically hit by level 73";
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Crit by lvl 73", critChance73txt, false);
+	statFrame.tooltip = "Chance to be critically hit by level 83";
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Crit by lvl 83", critChance73txt, false);
 end
 
 function CSC_SideFrame_SetAvoidance(statFrame, unit)
@@ -1435,11 +1417,11 @@ function CSC_SideFrame_SetDefenseUncritableCap(statFrame, unit)
 	local bonusFromTalents = 0;
 
 	if unitClassId == CSC_DRUID_CLASS_ID then
-		bonusFromTalents = select(5, GetTalentInfo(2, 16)); -- Survival of the Fittest
+		bonusFromTalents = select(5, GetTalentInfo(2, 18)); -- Survival of the Fittest
 	end
 
-	local critChance = (base + modifier)*0.04 + GetCombatRatingBonus(16) + bonusFromTalents;
-	local defCap73 = (19.6 - critChance)/0.04*2.4;
+	local critChance = (base + modifier)*0.04 + GetCombatRatingBonus(CR_RESILIENCE_CRIT_TAKEN) + bonusFromTalents;
+	local defCap73 = (21.6 - critChance)/0.04*4.92;
 	local defCap73txt = format("%.2F", defCap73);
 	
     if defCap73 <= 0 then
@@ -1448,7 +1430,7 @@ function CSC_SideFrame_SetDefenseUncritableCap(statFrame, unit)
         defCap73txt = RED_FONT_COLOR_CODE..defCap73txt..FONT_COLOR_CODE_CLOSE;
 	end
 
-	statFrame.tooltip = "Needed Defense rating to become uncritable against lvl 73";
+	statFrame.tooltip = "Needed Defense rating to become uncritable against lvl 83";
 	statFrame.tooltip2 = "Takes into account both Defense and Resilience rating";
 	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Defense to cap", defCap73txt, false);
 end
@@ -1459,11 +1441,11 @@ function CSC_SideFrame_SetResilienceUncritableCap(statFrame, unit)
 	local bonusFromTalents = 0;
 
 	if unitClassId == CSC_DRUID_CLASS_ID then
-		bonusFromTalents = select(5, GetTalentInfo(2, 16)); -- Survival of the Fittest
+		bonusFromTalents = select(5, GetTalentInfo(2, 18)); -- Survival of the Fittest
 	end
 
 	local critChance = (base + modifier)*0.04 + GetCombatRatingBonus(16) + bonusFromTalents;
-	local defCap73 = (19.6 - critChance)*39.42;
+	local defCap73 = (21.6 - critChance)*82;
 	local defCap73txt = format("%.2F", defCap73);
 
     if defCap73 <= 0 then
@@ -1472,7 +1454,7 @@ function CSC_SideFrame_SetResilienceUncritableCap(statFrame, unit)
         defCap73txt = RED_FONT_COLOR_CODE..defCap73txt..FONT_COLOR_CODE_CLOSE;
 	end
 
-	statFrame.tooltip = "Needed Resilience rating to become uncritable against lvl 73";
+	statFrame.tooltip = "Needed Resilience rating to become uncritable against lvl 83";
 	statFrame.tooltip2 = "Takes into account both Defense and Resilience rating";
 	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Resilience to cap", defCap73txt, false);
 end

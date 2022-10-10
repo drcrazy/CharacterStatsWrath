@@ -3,7 +3,7 @@ function CSC_CharacterDamageFrame_OnEnter(self)
 	-- Main hand weapon
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 	GameTooltip:SetText(self.TooltipMainTxt, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddDoubleLine(ATTACK_SPEED_COLON, format("%.2F", self.attackSpeed), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddDoubleLine(ATTACK_SPEED_SECONDS, format("%.2F", self.attackSpeed), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
 	GameTooltip:AddDoubleLine(DAMAGE_COLON, self.damage, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
 	GameTooltip:AddDoubleLine(DAMAGE_PER_SECOND, format("%.1F", self.dps), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
 	GameTooltip:AddDoubleLine(ATTACK_TOOLTIP..":", self.attackRating, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
@@ -91,20 +91,20 @@ function CSC_CharacterBlock_OnEnter(self)
 end
 
 function CSC_CharacterHitChanceFrame_OnEnter(self)
-	local hitChance = self.hitChance;
+	--local hitChance = self.hitChance;
 
-	local totalWeaponSkill = CSC_GetPlayerWeaponSkill("player", INVSLOT_MAINHAND);
-	local missChanceVsNPC, missChanceVsBoss, missChanceVsPlayer, dwMissChanceVsNpc, dwMissChanceVsBoss, dwMissChanceVsPlayer = CSC_GetPlayerMissChances("player", hitChance, totalWeaponSkill);
+	--local totalWeaponSkill = CSC_GetPlayerWeaponSkill("player", INVSLOT_MAINHAND);
+	--local missChanceVsNPC, missChanceVsBoss, missChanceVsPlayer, dwMissChanceVsNpc, dwMissChanceVsBoss, dwMissChanceVsPlayer = CSC_GetPlayerMissChances("player", hitChance, totalWeaponSkill);
 
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	GameTooltip:SetText(STAT_HIT_CHANCE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:SetText(COMBAT_RATING_NAME6, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
 	GameTooltip:AddLine("Reduces your chance to miss.");
 
-	GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
-	GameTooltip:AddLine("Miss Chance vs.");
-	GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 60 NPC: %.2F%%", missChanceVsNPC), format("(Dual wield: %.2F%%)", dwMissChanceVsNpc));
-	GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 60 Player: %.2F%%", missChanceVsPlayer), format("(Dual wield: %.2F%%)", dwMissChanceVsPlayer));
-	GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 63 NPC/Boss: %.2F%%", missChanceVsBoss), format("(Dual wield: %.2F%%)", dwMissChanceVsBoss));
+	--GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
+	--GameTooltip:AddLine("Miss Chance vs.");
+	--GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 80 NPC: %.2F%%", missChanceVsNPC), format("(Dual wield: %.2F%%)", dwMissChanceVsNpc));
+	--GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 80 Player: %.2F%%", missChanceVsPlayer), format("(Dual wield: %.2F%%)", dwMissChanceVsPlayer));
+	--GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 83 NPC/Boss: %.2F%%", missChanceVsBoss), format("(Dual wield: %.2F%%)", dwMissChanceVsBoss));
 	GameTooltip:Show();
 end
 
@@ -162,9 +162,9 @@ function CSC_CharacterHitRatingFrame_OnEnter(self)
 	local tooltip2 = " ";
 
 	if ( ratingIndex == CR_HIT_MELEE ) then
-		tooltip2 = format(CR_HIT_MELEE_TOOLTIP, playerLevel, ratingBonus, GetArmorPenetration());
+		tooltip2 = format(CR_HIT_MELEE_TOOLTIP, playerLevel, ratingBonus, GetCombatRating(CR_ARMOR_PENETRATION), GetArmorPenetration());
 	elseif ( ratingIndex == CR_HIT_RANGED ) then
-		tooltip2 = format(CR_HIT_RANGED_TOOLTIP, playerLevel, ratingBonus, GetArmorPenetration());
+		tooltip2 = format(CR_HIT_RANGED_TOOLTIP, playerLevel, ratingBonus, GetCombatRating(CR_ARMOR_PENETRATION), GetArmorPenetration());
 	elseif ( ratingIndex == CR_HIT_SPELL ) then
 		-- spell hit from talents
 		if unitClassId == CSC_MAGE_CLASS_ID then
@@ -203,14 +203,14 @@ function CSC_CharacterHitRatingFrame_OnEnter(self)
 		GameTooltip:AddLine("Miss Chance vs.");
 		GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level %d NPC: %.2F%%", playerLevel, missChanceVsNPC), format("(Dual wield: %.2F%%)", dwMissChanceVsNpc));
 		GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level %d Player: %.2F%%", playerLevel, missChanceVsPlayer), format("(Dual wield: %.2F%%)", dwMissChanceVsPlayer));
-		GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 73 NPC/Boss: %.2F%%", missChanceVsBoss), format("(Dual wield: %.2F%%)", dwMissChanceVsBoss));
+		GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 83 NPC/Boss: %.2F%%", missChanceVsBoss), format("(Dual wield: %.2F%%)", dwMissChanceVsBoss));
 	elseif (ratingIndex == CR_HIT_RANGED) then
 		local missChanceVsNPC, missChanceVsBoss, missChanceVsPlayer, _, _, _ = CSC_GetPlayerMissChances(unit, ratingBonus);
 		GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
 		GameTooltip:AddLine("Miss Chance vs.");
 		GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level %d NPC: %.2F%%", playerLevel, missChanceVsNPC));
 		GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level %d Player: %.2F%%", playerLevel, missChanceVsPlayer));
-		GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 73 NPC/Boss: %.2F%%", missChanceVsBoss));
+		GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 83 NPC/Boss: %.2F%%", missChanceVsBoss));
 	end
 	
 	GameTooltip:Show();
@@ -239,9 +239,9 @@ function CSC_CharacterMeleeCritFrame_OnEnter(self)
 		if self.critChance > dwCritCap then DWCRITCAP_COLOR_CODE = ORANGE_FONT_COLOR_CODE end
 
 		local critCapDwTxt = DWCRITCAP_COLOR_CODE..format("%.2F%%", dwCritCap)..FONT_COLOR_CODE_CLOSE;
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB.."Level 73 NPC/Boss: "..critCapTxt, "(Dual wield: "..critCapDwTxt..")");
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB.."Level 83 NPC/Boss: "..critCapTxt, "(Dual wield: "..critCapDwTxt..")");
 	else
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB.."Level 73 NPC/Boss: "..critCapTxt);
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB.."Level 83 NPC/Boss: "..critCapTxt);
 	end
 
 	GameTooltip:Show();
