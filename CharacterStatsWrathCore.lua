@@ -154,10 +154,14 @@ function CSC_GetPlayerCritCap(unit, ratingIndex)
 	local missChanceVsNPC, missChanceVsBoss, missChanceVsPlayer, dwMissChanceVsNpc, dwMissChanceVsBoss, dwMissChanceVsPlayer = CSC_GetPlayerMissChances(unit, totalHit);
 	
 	local playerWeaponSkill = UnitLevel(unit) * 5;
-	local bossDefense = 83 * 5;
-	local critSuppression = 4.8;
+	-- level 83 boss
+	local bossDefense = 415;
+	-- 0.2% per each point of defense above weapon skill, e.g. 0.2*(415-400)
+	local critSuppression = 3;
+	-- 5% base chance plus 0.1% per each point of defense above weapon skill, e.g. 0.1*(415-400)
 	local dodgeChance = 5 + (bossDefense - playerWeaponSkill) * 0,1;
-	local glancingChance = math.max(0, 6 + (bossDefense - playerWeaponSkill) * 1.2);
+	-- 24% fixed value in WotLK
+	local glancingChance = 24;
 
 	local critCap = 100 - missChanceVsBoss - dodgeChance - glancingChance + critSuppression;
 	local dwCritCap = 100 - dwMissChanceVsBoss - dodgeChance - glancingChance + critSuppression;

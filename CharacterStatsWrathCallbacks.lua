@@ -1,152 +1,6 @@
 -- OnEnter Tooltip functions
-function CSC_CharacterDamageFrame_OnEnter(self)
-	-- Main hand weapon
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	GameTooltip:SetText(self.TooltipMainTxt, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddDoubleLine(ATTACK_SPEED_SECONDS, format("%.2F", self.attackSpeed), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddDoubleLine(DAMAGE_COLON, self.damage, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddDoubleLine(DAMAGE_PER_SECOND, format("%.1F", self.dps), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddDoubleLine(ATTACK_TOOLTIP..":", self.attackRating, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	-- Check for offhand weapon
-	if ( self.offhandAttackSpeed ) then
-		GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
-		GameTooltip:AddLine(INVTYPE_WEAPONOFFHAND, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-		GameTooltip:AddDoubleLine(ATTACK_SPEED_COLON, format("%.2F", self.offhandAttackSpeed), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-		GameTooltip:AddDoubleLine(DAMAGE_COLON, self.offhandDamage, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-		GameTooltip:AddDoubleLine(DAMAGE_PER_SECOND, format("%.1F", self.offhandDps), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	end
-	GameTooltip:Show();
-end
 
-function CSC_CharacterSpellDamageFrame_OnEnter(self)
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	GameTooltip:SetText(STAT_SPELLPOWER, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddDoubleLine(STAT_SPELLPOWER_TOOLTIP);
-	GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
-	for i=2, MAX_SPELL_SCHOOLS do
-		GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..i), format("%.2F", GetSpellBonusDamage(i)), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-		GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..i);
-	end
-
-	if (self.spVsUndead ~= nil and UISettingsCharacter.showStatsFromArgentDawnItems) then
-		GameTooltip:AddDoubleLine(DAMAGE.." vs Undead: ", format("%.2F", self.spVsUndead), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	end
-	GameTooltip:Show();
-end
-
-function CSC_CharacterSpellCritFrame_OnEnter(self)
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	GameTooltip:SetText(HIGHLIGHT_FONT_COLOR_CODE..COMBAT_RATING_NAME11.." "..GetCombatRating(11)..FONT_COLOR_CODE_CLOSE);
-	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..2), format("%.2F", self.holyCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..2);
-	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..3), format("%.2F", self.fireCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..3);
-	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..5), format("%.2F", self.frostCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..5);
-	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..7), format("%.2F", self.arcaneCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..7);
-	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..6), format("%.2F", self.shadowCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..6);
-	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..4), format("%.2F", self.natureCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..4);
-
-	if self.unitClassId == CSC_SHAMAN_CLASS_ID then
-		GameTooltip:AddDoubleLine(CSC_LIGHTNING_TXT, format("%.2F", self.lightningCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	end
-
-	GameTooltip:Show();
-end
-
-function CSC_CharacterManaRegenFrame_OnEnter(self)
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	GameTooltip:SetText(format(MANA_REGEN_TOOLTIP, self.mp5NotCasting, self.mp5Casting), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddDoubleLine(MANA_REGEN.." (From Gear):", self.mp5FromGear);
-	GameTooltip:AddDoubleLine(MANA_REGEN.." (While Casting):", self.mp5Casting);
-	GameTooltip:AddDoubleLine(MANA_REGEN.." (While Not Casting):", self.mp5NotCasting);
-	GameTooltip:Show();
-end
-
-function CSC_CharacterBlock_OnEnter(self)
-	
-	if UISettingsGlobal.useBlizzardBlockValue then
-		self.blockValue = GetShieldBlock();
-	else
-		self.blockValue = CSC_GetBlockValue("player");
-		
-		local unitClassId = select(3, UnitClass("player"));
-		if (unitClassId == CSC_WARRIOR_CLASS_ID) then
-			local blockFromZGEnchants = CSC_GetBlockValueFromWarriorZGEnchants("player");
-			if (blockFromZGEnchants > 0) then
-				self.blockValue = self.blockValue + blockFromZGEnchants;
-			end
-		end
-	end
-
-	local blockRatingTxt = format(CR_BLOCK_TOOLTIP, GetCombatRating(CR_BLOCK), GetCombatRatingBonus(CR_BLOCK), self.blockValue);
-	
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	GameTooltip:SetText(self.blockChance);
-	GameTooltip:AddLine(blockRatingTxt);
-	GameTooltip:Show();
-end
-
-function CSC_CharacterHitChanceFrame_OnEnter(self)
-	--local hitChance = self.hitChance;
-
-	--local totalWeaponSkill = CSC_GetPlayerWeaponSkill("player", INVSLOT_MAINHAND);
-	--local missChanceVsNPC, missChanceVsBoss, missChanceVsPlayer, dwMissChanceVsNpc, dwMissChanceVsBoss, dwMissChanceVsPlayer = CSC_GetPlayerMissChances("player", hitChance, totalWeaponSkill);
-
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	GameTooltip:SetText(COMBAT_RATING_NAME6, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddLine("Reduces your chance to miss.");
-
-	--GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
-	--GameTooltip:AddLine("Miss Chance vs.");
-	--GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 80 NPC: %.2F%%", missChanceVsNPC), format("(Dual wield: %.2F%%)", dwMissChanceVsNpc));
-	--GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 80 Player: %.2F%%", missChanceVsPlayer), format("(Dual wield: %.2F%%)", dwMissChanceVsPlayer));
-	--GameTooltip:AddDoubleLine(format(CSC_SYMBOL_TAB.."Level 83 NPC/Boss: %.2F%%", missChanceVsBoss), format("(Dual wield: %.2F%%)", dwMissChanceVsBoss));
-	GameTooltip:Show();
-end
-
-function CSC_CharacterRangedHitChanceFrame_OnEnter(self)
-	local hitChance = self.hitChance;
-
-	local totalWeaponSkill = CSC_GetPlayerWeaponSkill("player", INVSLOT_RANGED);
-	local missChanceVsNPC, missChanceVsBoss, missChanceVsPlayer, _, _, _ = CSC_GetPlayerMissChances("player", hitChance, totalWeaponSkill);
-
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	GameTooltip:SetText(STAT_HIT_CHANCE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	GameTooltip:AddLine("Reduces your chance to miss.");
-
-	GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
-	GameTooltip:AddLine("Miss Chance vs.");
-	GameTooltip:AddLine(format(CSC_SYMBOL_TAB.."Level 60 NPC: %.2F%%", missChanceVsNPC));
-	GameTooltip:AddLine(format(CSC_SYMBOL_TAB.."Level 60 Player: %.2F%%", missChanceVsPlayer));
-	GameTooltip:AddLine(format(CSC_SYMBOL_TAB.."Level 63 NPC/Boss: %.2F%%", missChanceVsBoss));
-	GameTooltip:Show();
-end
-
-function CSC_CharacterSpellHitChanceFrame_OnEnter(self)
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	GameTooltip:SetText(format(CSC_SPELL_HIT_TOOLTIP_TXT, self.hitChance), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-
-	if self.unitClassId == CSC_MAGE_CLASS_ID then
-		GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
-		GameTooltip:AddLine(CSC_SPELL_HIT_SUBTOOLTIP_TXT);
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_ARCANE_SPELL_HIT_TXT, (self.arcaneHit + self.hitChance).."%");
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_FIRE_SPELL_HIT_TXT, (self.fireHit + self.hitChance).."%");
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_FROST_SPELL_HIT_TXT, (self.frostHit + self.hitChance).."%");
-	elseif self.unitClassId == CSC_WARLOCK_CLASS_ID then
-		GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
-		GameTooltip:AddLine(CSC_SPELL_HIT_SUBTOOLTIP_TXT);
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_DESTRUCTION_SPELL_HIT_TXT, self.hitChance.."%");
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_AFFLICTION_SPELL_HIT_TXT, (self.afflictionHit + self.hitChance).."%");
-	elseif self.unitClassId == CSC_SHAMAN_CLASS_ID then
-		GameTooltip:SetText(format(CSC_SPELL_HIT_TOOLTIP_2_TXT, self.hitChance), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	end
-	GameTooltip:Show();
-end
-
+-- Shared combat ratings
 function CSC_CharacterHitRatingFrame_OnEnter(self)
 
 	local unit = self.unit;
@@ -216,6 +70,26 @@ function CSC_CharacterHitRatingFrame_OnEnter(self)
 	GameTooltip:Show();
 end
 
+-- Melee Combat
+function CSC_CharacterDamageFrame_OnEnter(self)
+	-- Main hand weapon
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(self.TooltipMainTxt, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddDoubleLine(ATTACK_SPEED_SECONDS, format("%.2F", self.attackSpeed), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddDoubleLine(DAMAGE_COLON, self.damage, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddDoubleLine(DAMAGE_PER_SECOND, format("%.1F", self.dps), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddDoubleLine(ATTACK_TOOLTIP..":", self.attackRating, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	-- Check for offhand weapon
+	if ( self.offhandAttackSpeed ) then
+		GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
+		GameTooltip:AddLine(INVTYPE_WEAPONOFFHAND, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+		GameTooltip:AddDoubleLine(ATTACK_SPEED_COLON, format("%.2F", self.offhandAttackSpeed), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+		GameTooltip:AddDoubleLine(DAMAGE_COLON, self.offhandDamage, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+		GameTooltip:AddDoubleLine(DAMAGE_PER_SECOND, format("%.1F", self.offhandDps), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	end
+	GameTooltip:Show();
+end
+
 function CSC_CharacterMeleeCritFrame_OnEnter(self)
 	
 	local critChanceTxt = format(PAPERDOLLFRAME_TOOLTIP_FORMAT, MELEE_CRIT_CHANCE).." "..format("%.2F%%", self.critChance);
@@ -247,6 +121,7 @@ function CSC_CharacterMeleeCritFrame_OnEnter(self)
 	GameTooltip:Show();
 end
 
+-- Ranged combat
 function CSC_CharacterRangedCritFrame_OnEnter(self)
 	local critChanceTxt = HIGHLIGHT_FONT_COLOR_CODE..RANGED_CRIT_CHANCE.." "..format("%.2F%%", self.critChance)..FONT_COLOR_CODE_CLOSE;
 	local critRatingTxt = format(CR_CRIT_RANGED_TOOLTIP, GetCombatRating(CR_CRIT_RANGED), GetCombatRatingBonus(CR_CRIT_RANGED));
@@ -262,11 +137,61 @@ function CSC_CharacterRangedCritFrame_OnEnter(self)
 	local CRITCAP_COLOR_CODE = GREEN_FONT_COLOR_CODE;
 	if self.critChance > critCap then CRITCAP_COLOR_CODE = ORANGE_FONT_COLOR_CODE end
 	local critCapTxt = CRITCAP_COLOR_CODE..format("%.2F%%", critCap)..FONT_COLOR_CODE_CLOSE;
-	GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB.."Level 73 NPC/Boss: "..critCapTxt);
+	GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB.."Level 83 NPC/Boss: "..critCapTxt);
 
 	GameTooltip:Show();
 end
 
+-- Spell
+function CSC_CharacterSpellDamageFrame_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(STAT_SPELLPOWER, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddDoubleLine(STAT_SPELLPOWER_TOOLTIP);
+	GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
+	for i=2, MAX_SPELL_SCHOOLS do
+		GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..i), format("%.2F", GetSpellBonusDamage(i)), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+		GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..i);
+	end
+
+	if (self.spVsUndead ~= nil and UISettingsCharacter.showStatsFromArgentDawnItems) then
+		GameTooltip:AddDoubleLine(DAMAGE.." vs Undead: ", format("%.2F", self.spVsUndead), NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	end
+	GameTooltip:Show();
+end
+
+function CSC_CharacterSpellCritFrame_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(HIGHLIGHT_FONT_COLOR_CODE..COMBAT_RATING_NAME11.." "..GetCombatRating(11)..FONT_COLOR_CODE_CLOSE);
+	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..2), format("%.2F", self.holyCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..2);
+	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..3), format("%.2F", self.fireCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..3);
+	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..5), format("%.2F", self.frostCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..5);
+	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..7), format("%.2F", self.arcaneCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..7);
+	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..6), format("%.2F", self.shadowCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..6);
+	GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..4), format("%.2F", self.natureCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..4);
+
+	if self.unitClassId == CSC_SHAMAN_CLASS_ID then
+		GameTooltip:AddDoubleLine(CSC_LIGHTNING_TXT, format("%.2F", self.lightningCrit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	end
+
+	GameTooltip:Show();
+end
+
+function CSC_CharacterManaRegenFrame_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(format(MANA_REGEN_TOOLTIP, self.mp5NotCasting, self.mp5Casting), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddDoubleLine(MANA_REGEN.." (From Gear):", self.mp5FromGear);
+	GameTooltip:AddDoubleLine(MANA_REGEN.." (While Casting):", self.mp5Casting);
+	GameTooltip:AddDoubleLine(MANA_REGEN.." (While Not Casting):", self.mp5NotCasting);
+	GameTooltip:Show();
+end
+
+-- Defense
 function CSC_CharacterDefenseFrame_OnEnter(self)
 	local defensePercent = GetDodgeBlockParryChanceFromDefense();
 	local ratingTxt = format(DEFAULT_STATDEFENSE_TOOLTIP, GetCombatRating(CR_DEFENSE_SKILL), GetCombatRatingBonus(CR_DEFENSE_SKILL), defensePercent, defensePercent);
@@ -274,6 +199,52 @@ function CSC_CharacterDefenseFrame_OnEnter(self)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
 	GameTooltip:SetText(self.defense, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
 	GameTooltip:AddLine(ratingTxt);
+	GameTooltip:Show();
+end
+
+function CSC_CharacterBlock_OnEnter(self)
+	
+	if UISettingsGlobal.useBlizzardBlockValue then
+		self.blockValue = GetShieldBlock();
+	else
+		self.blockValue = CSC_GetBlockValue("player");
+		
+		local unitClassId = select(3, UnitClass("player"));
+		if (unitClassId == CSC_WARRIOR_CLASS_ID) then
+			local blockFromZGEnchants = CSC_GetBlockValueFromWarriorZGEnchants("player");
+			if (blockFromZGEnchants > 0) then
+				self.blockValue = self.blockValue + blockFromZGEnchants;
+			end
+		end
+	end
+
+	local blockRatingTxt = format(CR_BLOCK_TOOLTIP, GetCombatRating(CR_BLOCK), GetCombatRatingBonus(CR_BLOCK), self.blockValue);
+	
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(self.blockChance);
+	GameTooltip:AddLine(blockRatingTxt);
+	GameTooltip:Show();
+end
+
+-- Not used. TODO: remove
+function CSC_CharacterSpellHitChanceFrame_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(format(CSC_SPELL_HIT_TOOLTIP_TXT, self.hitChance), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+
+	if self.unitClassId == CSC_MAGE_CLASS_ID then
+		GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
+		GameTooltip:AddLine(CSC_SPELL_HIT_SUBTOOLTIP_TXT);
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_ARCANE_SPELL_HIT_TXT, (self.arcaneHit + self.hitChance).."%");
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_FIRE_SPELL_HIT_TXT, (self.fireHit + self.hitChance).."%");
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_FROST_SPELL_HIT_TXT, (self.frostHit + self.hitChance).."%");
+	elseif self.unitClassId == CSC_WARLOCK_CLASS_ID then
+		GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
+		GameTooltip:AddLine(CSC_SPELL_HIT_SUBTOOLTIP_TXT);
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_DESTRUCTION_SPELL_HIT_TXT, self.hitChance.."%");
+		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_AFFLICTION_SPELL_HIT_TXT, (self.afflictionHit + self.hitChance).."%");
+	elseif self.unitClassId == CSC_SHAMAN_CLASS_ID then
+		GameTooltip:SetText(format(CSC_SPELL_HIT_TOOLTIP_2_TXT, self.hitChance), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	end
 	GameTooltip:Show();
 end
 
