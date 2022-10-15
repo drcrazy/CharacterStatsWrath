@@ -226,28 +226,6 @@ function CSC_CharacterBlock_OnEnter(self)
 	GameTooltip:Show();
 end
 
--- Not used. TODO: remove
-function CSC_CharacterSpellHitChanceFrame_OnEnter(self)
-	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
-	GameTooltip:SetText(format(CSC_SPELL_HIT_TOOLTIP_TXT, self.hitChance), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-
-	if self.unitClassId == CSC_MAGE_CLASS_ID then
-		GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
-		GameTooltip:AddLine(CSC_SPELL_HIT_SUBTOOLTIP_TXT);
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_ARCANE_SPELL_HIT_TXT, (self.arcaneHit + self.hitChance).."%");
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_FIRE_SPELL_HIT_TXT, (self.fireHit + self.hitChance).."%");
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_FROST_SPELL_HIT_TXT, (self.frostHit + self.hitChance).."%");
-	elseif self.unitClassId == CSC_WARLOCK_CLASS_ID then
-		GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
-		GameTooltip:AddLine(CSC_SPELL_HIT_SUBTOOLTIP_TXT);
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_DESTRUCTION_SPELL_HIT_TXT, self.hitChance.."%");
-		GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_AFFLICTION_SPELL_HIT_TXT, (self.afflictionHit + self.hitChance).."%");
-	elseif self.unitClassId == CSC_SHAMAN_CLASS_ID then
-		GameTooltip:SetText(format(CSC_SPELL_HIT_TOOLTIP_2_TXT, self.hitChance), HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	end
-	GameTooltip:Show();
-end
-
 -- SIDE FRAME CALLBACKS
 function CSC_CharacterMeleeHitChanceSideFrame_OnEnter(self)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");

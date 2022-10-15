@@ -2,27 +2,6 @@
     Util functions specific for Classes
 ]]
 
--- returns additional crit % stats from Arcane instability and Critical Mass if any
-function CSC_GetMageCritStatsFromTalents()
-
-	-- !! It looks like these are already included in TBC by default
-	local arcaneInstabilityCrit = 0;
-	local criticalMassCrit = 0;
-
-	-- Arcane Instability (1, 2, 3)%
-	-- !!! Already added by default
-	--arcaneInstabilityCrit = select(5, GetTalentInfo(1, 17));
-
-	-- Critical Mass (2, 4, 6)%
-	--local criticalMassTable = { 2, 4, 6 };
-	--local spellRank = select(5, GetTalentInfo(2, 14));
-	--if (spellRank > 0) and (spellRank <= 3) then
-	--	criticalMassCrit = criticalMassTable[spellRank];
-    --end
-
-	return arcaneInstabilityCrit, criticalMassCrit;
-end
-
 -- returns the spell hit from Arcane Focus and Elemental Precision talents
 function CSC_GetMageSpellHitFromTalents()
 	local arcaneHit = 0;
@@ -55,23 +34,6 @@ function CSC_GetWarlockCritStatsFromTalents()
 	local devastationCrit = select(5, GetTalentInfo(3, 7));
 
 	return devastationCrit;
-end
-
--- returns the combined crit stats from Holy Specialization and Force of Will
-function CSC_GetPriestCritStatsFromTalents()
-	
-	local holySpecializationCrit = 0;
-	local forceOfWillCrit = 0;
-
-	-- !!! Already counted by default
-	-- Holy Specialization (1, 2, 3, 4, 5)%
-	--holySpecializationCrit = select(5, GetTalentInfo(2, 3));
-
-	-- Force of Will (1, 2, 3, 4, 5)%
-	forceOfWillCrit = select(5, GetTalentInfo(1, 17));
-
-    local critCombined = holySpecializationCrit + forceOfWillCrit;
-	return critCombined;
 end
 
 -- returns the healing modifier from Spiritual Healing talent for Priests
@@ -296,17 +258,6 @@ function CSC_GetShamanT2SpellCrit(unit)
 	end
 
     return spellCritFromSet;
-end
-
-function CSC_GetHolyCritFromBenediction(unit)
-	local benedictionCrit = 0;
-	local itemId = GetInventoryItemID(unit, INVSLOT_MAINHAND);
-	
-	if itemId == 18608 then
-		benedictionCrit = 2;
-	end
-
-	return benedictionCrit;
 end
 
 function CSC_GetBlockValueFromWarriorZGEnchants(unit)
