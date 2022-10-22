@@ -748,11 +748,14 @@ function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
 	local unitClassId = select(3, UnitClass(unit));
 
 	local statName = getglobal("COMBAT_RATING_NAME"..ratingIndex);
+	-- rating raw value
 	local rating = GetCombatRating(ratingIndex);
-	local ratingBonus = GetCombatRatingBonus(ratingIndex); -- hit rating in % (hit chance) (from gear sources, doesn't seem to include talents)
+	-- additional hit chance due to hit rating on gear 
+	local ratingBonus = GetCombatRatingBonus(ratingIndex); 
 
 	if ( ratingIndex == CR_HIT_MELEE ) then
-		local hitChance = GetHitModifier(); -- includes talents, doesn't include hit raiting from gear
+		-- additional hit chance from talents
+		local hitChance = GetHitModifier(); 
 		local combatRatingMult = CSC_GetCombatRatingPerUnitBonus(unit, CSC_COMBAT_RATING_HIT);
 
 		if not hitChance then
