@@ -772,8 +772,6 @@ function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
 			spellHitChance = 0;
 		end
 
-		--spellHitChance = spellHitChance / 7; -- BUG ON BLIZZARD's side. returns 7 for each 1% hit. Dirty fix for now
-
 		if (unitClassId == CSC_SHAMAN_CLASS_ID) then
 			local hitFromElementalPrecision = CSC_GetShamanHitFromElementalPrecision();
 			spellHitChance = spellHitChance + hitFromElementalPrecision;

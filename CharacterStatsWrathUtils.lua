@@ -26,12 +26,18 @@ function CSC_GetSpellHitModifier(unit)
 	local spellHit = 0;
 	local unitClassId = select(3, UnitClass(unit));
 
-	if unitClassId == CSC_SHAMAN_CLASS_ID then
-		local spellRank = select(5, GetTalentInfo(3, 6)); -- Nature's Guidance
-		spellHit = spellRank; -- 1% per rank
+	if unitClassId == CSC_WARLOCK_CLASS_ID then
+		local spellRank = select(5, GetTalentInfo(1, 5)); -- Suppression, 1% per rank
+		spellHit = spellRank;
 	elseif unitClassId == CSC_DRUID_CLASS_ID then
-		local spellRank = select(5, GetTalentInfo(1, 16)); -- Balance of power
-		spellHit = spellRank * 2; -- 2% per rank
+		local spellRank = select(5, GetTalentInfo(1, 13)); -- Balance of power, 2% per rank
+		spellHit = spellRank * 2;
+	elseif unitClassId == CSC_MAGE_CLASS_ID then
+		local spellRank = select(5, GetTalentInfo(3, 17)); -- Precision, 1% per rank
+		spellHit = spellRank;
+	elseif unitClassId == CSC_DEATHKNIGHT_CLASS_ID then
+		local spellRank = select(5, GetTalentInfo(3, 1));  -- Virulence, 1% per rank
+		spellHit = spellRank;
 	end
 
 	local spellHitFromAuras = 0;
@@ -40,18 +46,14 @@ function CSC_GetSpellHitModifier(unit)
 	for i = 1, 40 do
 		local spellId = select(10, UnitAura(unit, i, "HELPFUL"));
 		if spellId then
-			if spellId == 28878 then -- Inspiring Presence
+			if spellId == 6562 then -- Heroic Presence
 				spellHitFromAuras = spellHitFromAuras + 1;
 				hasInspiringPresenceAura = true;
-			end
-
-			if spellId == 30708 then -- Totem of Wrath
-				spellHitFromAuras = spellHitFromAuras + 3;
 			end
 		end
 	end
 
-	if not hasInspiringPresenceAura and IsSpellKnown(28878) then
+	if not hasInspiringPresenceAura and IsSpellKnown(6562) then
 		spellHitFromAuras = spellHitFromAuras + 1;
 	end
 
