@@ -10,6 +10,6 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Lua check
-        uses: nebularg/actions-luacheck@86af42dcf465915896671903fcdec3e01a492e87
+      - uses: nebularg/actions-luacheck@86af42dcf465915896671903fcdec3e01a492e87
         with:
           args: --no-color -o 011
