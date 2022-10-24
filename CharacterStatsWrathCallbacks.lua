@@ -22,12 +22,11 @@ function CSC_CharacterHitRatingFrame_OnEnter(self)
 	elseif ( ratingIndex == CR_HIT_SPELL ) then
 		-- spell hit from talents
 		if unitClassId == CSC_MAGE_CLASS_ID then
-			local arcaneHit, frostFireHit = CSC_GetMageSpellHitFromTalents();
-			self.arcaneHit = arcaneHit;
-			self.frostHit = frostFireHit;
-			self.fireHit = frostFireHit;
-		elseif unitClassId == CSC_WARLOCK_CLASS_ID then
-			self.afflictionHit = CSC_GetWarlockSpellHitFromTalents();
+			self.arcaneHit = CSC_GetMageSpellHitFromTalents();
+		elseif unitClassId == CSC_PRIEST_CLASS_ID then
+			self.shadowHit = CSC_GetPriestSpellHitFromTalents();
+		elseif unitClassId == CSC_SHAMAN_CLASS_ID then
+			self.elemHit = CSC_GetShamanHitFromTalents();
 		end
 		tooltip2 = format(CR_HIT_SPELL_TOOLTIP, playerLevel, ratingBonus, GetSpellPenetration(), GetSpellPenetration());
 	else
@@ -42,14 +41,28 @@ function CSC_CharacterHitRatingFrame_OnEnter(self)
 		if unitClassId == CSC_MAGE_CLASS_ID then
 			GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
 			GameTooltip:AddLine(CSC_SPELL_HIT_SUBTOOLTIP_TXT);
-			GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_ARCANE_SPELL_HIT_TXT, format("%.2F%%", self.arcaneHit + self.spellHitGearTalents));
-			GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_FIRE_SPELL_HIT_TXT, format("%.2F%%", self.fireHit + self.spellHitGearTalents));
-			GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_FROST_SPELL_HIT_TXT, format("%.2F%%", self.frostHit + self.spellHitGearTalents));
-		elseif unitClassId == CSC_WARLOCK_CLASS_ID then
+			GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..7), format("%.2F", self.arcaneHit + self.spellHitGearTalents).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+			GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..7);
+			GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..3), format("%.2F", self.spellHitGearTalents).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+			GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..3);
+			GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..5), format("%.2F", self.spellHitGearTalents).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+			GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..5);
+		elseif unitClassId == CSC_PRIEST_CLASS_ID then
 			GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
 			GameTooltip:AddLine(CSC_SPELL_HIT_SUBTOOLTIP_TXT);
-			GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_DESTRUCTION_SPELL_HIT_TXT, format("%.2F%%", self.spellHitGearTalents));
-			GameTooltip:AddDoubleLine(CSC_SYMBOL_TAB..CSC_AFFLICTION_SPELL_HIT_TXT, format("%.2F%%", self.afflictionHit + self.spellHitGearTalents));
+			GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..6), format("%.2F", self.spellHitGearTalents + self.shadowHit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+			GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..6);
+			GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..2), format("%.2F", self.spellHitGearTalents).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+			GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..2);
+		elseif unitClassId == CSC_SHAMAN_CLASS_ID then
+			GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
+			GameTooltip:AddLine(CSC_SPELL_HIT_SUBTOOLTIP_TXT);
+			GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..3), format("%.2F", self.spellHitGearTalents + self.elemHit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+			GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..3);
+			GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..5), format("%.2F", self.spellHitGearTalents + self.elemHit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+			GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..5);
+			GameTooltip:AddDoubleLine(getglobal("DAMAGE_SCHOOL"..4), format("%.2F", self.spellHitGearTalents + self.elemHit).."%", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+			GameTooltip:AddTexture("Interface\\PaperDollInfoFrame\\SpellSchoolIcon"..4);
 		end
 	elseif (ratingIndex == CR_HIT_MELEE) then
 		local missChanceVsNPC, missChanceVsBoss, missChanceVsPlayer, dwMissChanceVsNpc, dwMissChanceVsBoss, dwMissChanceVsPlayer = CSC_GetPlayerMissChances(unit, ratingBonus);

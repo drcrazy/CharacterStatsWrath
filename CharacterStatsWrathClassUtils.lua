@@ -2,31 +2,31 @@
     Util functions specific for Classes
 ]]
 
--- returns the spell hit from Arcane Focus and Elemental Precision talents
+-- returns the spell hit from Arcane Focus talents
 function CSC_GetMageSpellHitFromTalents()
 	local arcaneHit = 0;
-	local frostFireHit = 0;
 
-	-- Arcane Focus
-	local spellRank = select(5, GetTalentInfo(1, 2));
-	arcaneHit = spellRank * 2; -- 2% for each point
+	-- Arcane Focus, 1% for each point
+	local spellRank = select(5, GetTalentInfo(1, 3));
+	arcaneHit = spellRank;
 
-	-- Elemental Precision
-	frostFireHit = select(5, GetTalentInfo(3, 3));
-
-	return arcaneHit, frostFireHit;
+	return arcaneHit
 end
 
--- returns the spell hit from Suppression talent
-function CSC_GetWarlockSpellHitFromTalents()
-	local afflictionHit = 0;
-
-	-- Suppression
-	local spellRank = select(5, GetTalentInfo(1, 1));
-	afflictionHit = spellRank * 2; -- 2% for each point
-
-	return afflictionHit;
+-- return the spell hit from Shadow Focus
+function CSC_GetPriestSpellHitFromTalents()
+	local spellRank = select(5, GetTalentInfo(3, 3));
+	
+	return spellRank;
 end
+
+-- returns the spell hit from Elemental Precision
+function CSC_GetShamanHitFromTalents()
+	local spellRank = select(5, GetTalentInfo(1, 16));
+
+	return spellRank;
+end
+
 
 -- returns the spell crit from Devastation talent
 function CSC_GetWarlockCritStatsFromTalents()
@@ -125,21 +125,6 @@ function CSC_GetShapeshiftForm()
 	end
 
 	return shapeIndex;
-end
-
--- already included by default
--- returns the bonus hit from Nature's Guidance talent (counts as melee and spell hit)
-function CSC_GetShamanHitFromTalents()
-	-- Nature's Guidance
-	local spellRank = select(5, GetTalentInfo(3, 6));
-	return spellRank;
-end
-
-function CSC_GetShamanHitFromElementalPrecision()
-	local spellRank = select(5, GetTalentInfo(1, 15));
-	spellRank = 2 * spellRank; -- increased by 2% for each rank
-
-	return spellRank;
 end
 
 -- returns the bonus crit from the Call of Thunder talent for Shamans
