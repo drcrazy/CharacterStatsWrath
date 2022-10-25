@@ -83,7 +83,7 @@ local function CSC_ShowStatFrames(statFrames, category)
 end
 
 function UIConfig:InitializeStatsFrames(leftParentFrame, rightParentFrame)
-    local offsetStepY = 15;
+    local offsetStepY = 14;
     local accumulatedOffsetY = 0;
     
     for i = 1, NUM_STATS_TO_SHOW do
@@ -490,77 +490,77 @@ hooksecurefunc("ToggleCharacter", CSC_ToggleCharacterPostHook);
 
 -- Serializing the DB
 local function SerializeGlobalDatabase()
-    if (CharacterStatsTbcDB == nil) then
-        CharacterStatsTbcDB = UISettingsGlobal;
+    if (CharacterStatsWrathDB == nil) then
+        CharacterStatsWrathDB = UISettingsGlobal;
     end
 
-    if (CharacterStatsTbcDB.useBlizzardBlockValue == nil) then
-        CharacterStatsTbcDB.useBlizzardBlockValue = UISettingsGlobal.useBlizzardBlockValue;
+    if (CharacterStatsWrathDB.useBlizzardBlockValue == nil) then
+        CharacterStatsWrathDB.useBlizzardBlockValue = UISettingsGlobal.useBlizzardBlockValue;
     else
-        UISettingsGlobal.useBlizzardBlockValue = CharacterStatsTbcDB.useBlizzardBlockValue;
+        UISettingsGlobal.useBlizzardBlockValue = CharacterStatsWrathDB.useBlizzardBlockValue;
     end
 
     -- Stats frame visibility
-    if (CharacterStatsTbcDB.statsPanelHidden == nil) then
-        CharacterStatsTbcDB.statsPanelHidden = UISettingsGlobal.statsPanelHidden;
+    if (CharacterStatsWrathDB.statsPanelHidden == nil) then
+        CharacterStatsWrathDB.statsPanelHidden = UISettingsGlobal.statsPanelHidden;
     else
-        UISettingsGlobal.statsPanelHidden = CharacterStatsTbcDB.statsPanelHidden;
+        UISettingsGlobal.statsPanelHidden = CharacterStatsWrathDB.statsPanelHidden;
     end
 end
 
 local function SerializeCharacterDatabase()
-    if (CharacterStatsTbcCharacterDB == nil) then
-        CharacterStatsTbcCharacterDB = UISettingsCharacter;
+    if (CharacterStatsWrathCharacterDB == nil) then
+        CharacterStatsWrathCharacterDB = UISettingsCharacter;
     end
 
     -- Left dropdown category
-    if (CharacterStatsTbcCharacterDB.selectedLeftStatsCategory == nil) then
-        CharacterStatsTbcCharacterDB.selectedLeftStatsCategory = UISettingsCharacter.selectedLeftStatsCategory;
+    if (CharacterStatsWrathCharacterDB.selectedLeftStatsCategory == nil) then
+        CharacterStatsWrathCharacterDB.selectedLeftStatsCategory = UISettingsCharacter.selectedLeftStatsCategory;
     else
-        UISettingsCharacter.selectedLeftStatsCategory = CharacterStatsTbcCharacterDB.selectedLeftStatsCategory;
+        UISettingsCharacter.selectedLeftStatsCategory = CharacterStatsWrathCharacterDB.selectedLeftStatsCategory;
     end
 
     -- Right dropdown category
-    if (CharacterStatsTbcCharacterDB.selectedRightStatsCategory == nil) then
-        CharacterStatsTbcCharacterDB.selectedRightStatsCategory = UISettingsCharacter.selectedRightStatsCategory;
+    if (CharacterStatsWrathCharacterDB.selectedRightStatsCategory == nil) then
+        CharacterStatsWrathCharacterDB.selectedRightStatsCategory = UISettingsCharacter.selectedRightStatsCategory;
     else
-        UISettingsCharacter.selectedRightStatsCategory = CharacterStatsTbcCharacterDB.selectedRightStatsCategory;
+        UISettingsCharacter.selectedRightStatsCategory = CharacterStatsWrathCharacterDB.selectedRightStatsCategory;
     end
 
     -- Stats from AD items checkbox
-    if (CharacterStatsTbcCharacterDB.showStatsFromArgentDawnItems == nil) then
-        CharacterStatsTbcCharacterDB.showStatsFromArgentDawnItems = UISettingsCharacter.showStatsFromArgentDawnItems;
+    if (CharacterStatsWrathCharacterDB.showStatsFromArgentDawnItems == nil) then
+        CharacterStatsWrathCharacterDB.showStatsFromArgentDawnItems = UISettingsCharacter.showStatsFromArgentDawnItems;
     else
-        UISettingsCharacter.showStatsFromArgentDawnItems = CharacterStatsTbcCharacterDB.showStatsFromArgentDawnItems;
+        UISettingsCharacter.showStatsFromArgentDawnItems = CharacterStatsWrathCharacterDB.showStatsFromArgentDawnItems;
     end
 
     -- Side Stats frame status
-    if (CharacterStatsTbcCharacterDB.sideStatsFrameHidden == nil) then
-        CharacterStatsTbcCharacterDB.sideStatsFrameHidden = UISettingsCharacter.sideStatsFrameHidden;
+    if (CharacterStatsWrathCharacterDB.sideStatsFrameHidden == nil) then
+        CharacterStatsWrathCharacterDB.sideStatsFrameHidden = UISettingsCharacter.sideStatsFrameHidden;
     else
-        UISettingsCharacter.sideStatsFrameHidden = CharacterStatsTbcCharacterDB.sideStatsFrameHidden;
+        UISettingsCharacter.sideStatsFrameHidden = CharacterStatsWrathCharacterDB.sideStatsFrameHidden;
     end
 
     -- Side Stats frame category visibilities
-    if (CharacterStatsTbcCharacterDB.showSideStatsMelee == nil) then
-        CharacterStatsTbcCharacterDB.showSideStatsMelee = UISettingsCharacter.showSideStatsMelee;
+    if (CharacterStatsWrathCharacterDB.showSideStatsMelee == nil) then
+        CharacterStatsWrathCharacterDB.showSideStatsMelee = UISettingsCharacter.showSideStatsMelee;
     else
-        UISettingsCharacter.showSideStatsMelee = CharacterStatsTbcCharacterDB.showSideStatsMelee;
+        UISettingsCharacter.showSideStatsMelee = CharacterStatsWrathCharacterDB.showSideStatsMelee;
     end
-    if (CharacterStatsTbcCharacterDB.showSideStatsRanged == nil) then
-        CharacterStatsTbcCharacterDB.showSideStatsRanged = UISettingsCharacter.showSideStatsRanged;
+    if (CharacterStatsWrathCharacterDB.showSideStatsRanged == nil) then
+        CharacterStatsWrathCharacterDB.showSideStatsRanged = UISettingsCharacter.showSideStatsRanged;
     else
-        UISettingsCharacter.showSideStatsRanged = CharacterStatsTbcCharacterDB.showSideStatsRanged;
+        UISettingsCharacter.showSideStatsRanged = CharacterStatsWrathCharacterDB.showSideStatsRanged;
     end
-    if (CharacterStatsTbcCharacterDB.showSideStatsSpell == nil) then
-        CharacterStatsTbcCharacterDB.showSideStatsSpell = UISettingsCharacter.showSideStatsSpell;
+    if (CharacterStatsWrathCharacterDB.showSideStatsSpell == nil) then
+        CharacterStatsWrathCharacterDB.showSideStatsSpell = UISettingsCharacter.showSideStatsSpell;
     else
-        UISettingsCharacter.showSideStatsSpell = CharacterStatsTbcCharacterDB.showSideStatsSpell;
+        UISettingsCharacter.showSideStatsSpell = CharacterStatsWrathCharacterDB.showSideStatsSpell;
     end
-    if (CharacterStatsTbcCharacterDB.showSideStatsDefense == nil) then
-        CharacterStatsTbcCharacterDB.showSideStatsDefense = UISettingsCharacter.showSideStatsDefense;
+    if (CharacterStatsWrathCharacterDB.showSideStatsDefense == nil) then
+        CharacterStatsWrathCharacterDB.showSideStatsDefense = UISettingsCharacter.showSideStatsDefense;
     else
-        UISettingsCharacter.showSideStatsDefense = CharacterStatsTbcCharacterDB.showSideStatsDefense;
+        UISettingsCharacter.showSideStatsDefense = CharacterStatsWrathCharacterDB.showSideStatsDefense;
     end
 end
 

@@ -2,21 +2,19 @@
 local _, core = ...;
 
 local CharacterStatsWrathFrame = CreateFrame("Frame");
-CharacterStatsWrathFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
-CharacterStatsWrathFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-CharacterStatsWrathFrame:RegisterEvent("UNIT_AURA");
-CharacterStatsWrathFrame:RegisterEvent("PLAYER_DAMAGE_DONE_MODS");
-CharacterStatsWrathFrame:RegisterEvent("SKILL_LINES_CHANGED");
-CharacterStatsWrathFrame:RegisterEvent("UPDATE_SHAPESHIFT_FORM");
-CharacterStatsWrathFrame:RegisterEvent("UNIT_DAMAGE");
-CharacterStatsWrathFrame:RegisterEvent("UNIT_ATTACK_SPEED");
-CharacterStatsWrathFrame:RegisterEvent("UNIT_RANGEDDAMAGE");
-CharacterStatsWrathFrame:RegisterEvent("UNIT_ATTACK");
 CharacterStatsWrathFrame:RegisterEvent("UNIT_RESISTANCES");
 CharacterStatsWrathFrame:RegisterEvent("UNIT_STATS");
-CharacterStatsWrathFrame:RegisterEvent("UNIT_MAXHEALTH");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_AURA");
+CharacterStatsWrathFrame:RegisterUnitEvent("UNIT_MAXHEALTH", "player");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_DAMAGE");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_RANGEDDAMAGE");
+CharacterStatsWrathFrame:RegisterEvent("PLAYER_DAMAGE_DONE_MODS");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_ATTACK_SPEED");
 CharacterStatsWrathFrame:RegisterEvent("UNIT_ATTACK_POWER");
 CharacterStatsWrathFrame:RegisterEvent("UNIT_RANGED_ATTACK_POWER");
+CharacterStatsWrathFrame:RegisterEvent("UNIT_ATTACK");
+CharacterStatsWrathFrame:RegisterEvent("SKILL_LINES_CHANGED");
+CharacterStatsWrathFrame:RegisterEvent("VARIABLES_LOADED");
 CharacterStatsWrathFrame:RegisterEvent("COMBAT_RATING_UPDATE");
 CharacterStatsWrathFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
 
@@ -30,18 +28,22 @@ CharacterStatsWrathFrame:SetScript("OnEvent",
             core.UIConfig:UpdateSideStats();
         end
 
+        if not core.UIConfig.CharacterStatsPanel:IsVisible() then
+            return;
+        end
+
         if args[1] == "player" then
-            if ( event == "UNIT_DAMAGE" or
+            if ( event == "UNIT_RESISTANCES" or
+                event == "UNIT_STATS" or
+                event == "UNIT_AURA" or
+                event == "UNIT_MAXHEALTH" or
+				event == "UNIT_DAMAGE" or
+                event == "UNIT_RANGEDDAMAGE" or
 				event == "PLAYER_DAMAGE_DONE_MODS" or
 				event == "UNIT_ATTACK_SPEED" or
-				event == "UNIT_RANGEDDAMAGE" or
+                event == "UNIT_ATTACK_POWER" or
+                event == "UNIT_RANGED_ATTACK_POWER" or
 				event == "UNIT_ATTACK" or
-				event == "UNIT_RESISTANCES" or
-				event == "UNIT_STATS" or
-				event == "UNIT_AURA" or
-				event == "UNIT_MAXHEALTH" or
-				event == "UNIT_ATTACK_POWER" or
-				event == "UNIT_RANGED_ATTACK_POWER" or
 				event == "SKILL_LINES_CHANGED" or
                 event == "COMBAT_RATING_UPDATE" or
                 event == "GROUP_ROSTER_UPDATE") then
