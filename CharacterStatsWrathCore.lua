@@ -1186,8 +1186,9 @@ end
 
 function CSC_SideFrame_SetArmorPenetration(statFrame, unit)
 	local armorPen = GetArmorPenetration();
-	statFrame.tooltip = format(ITEM_MOD_ARMOR_PENETRATION_RATING, armorPen);
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Armor Penetration", armorPen, false);
+	local armorPenRating = GetCombatRating(CR_ARMOR_PENETRATION);
+	statFrame.tooltip = "Your ArPen rating: " .. armorPenRating;
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Armor Penetration", armorPen, true);
 end
 
 -- Ranged
