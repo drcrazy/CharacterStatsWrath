@@ -27,44 +27,35 @@ function CSC_GetShamanHitFromTalents()
 	return spellRank;
 end
 
+-- returns the bonus crit from the Call of Thunder talent for Shamans
+function CSC_GetShamanCallOfThunderCrit()
+	-- Call of Thunder (Lightning), 5% per a single point
+	local spellRank = select(5, GetTalentInfo(1, 2));
+	return spellRank * 5;
+end
+
+-- returns the bonus crit from the Tidal Mastery telent for Shamans
+function CSC_GetShamanTidalMasteryCrit()
+	-- Tidal Mastery (Nature/Lightning), 1% per each point
+	local spellRank = select(5, GetTalentInfo(3, 12));
+	return spellRank;
+end
 
 -- returns the spell crit from Devastation talent
 function CSC_GetWarlockCritStatsFromTalents()
-	-- the spell rank is equal to the value
-	local devastationCrit = select(5, GetTalentInfo(3, 7));
+	-- the spell rank is equal to the value, 5% per a single point
+	local devastationCrit = select(5, GetTalentInfo(3, 11));
 
-	return devastationCrit;
+	return devastationCrit * 5;
 end
+
+
 
 -- returns the healing modifier from Spiritual Healing talent for Priests
 function CSC_GetPriestBonusHealingModifierFromTalents()
 	-- Spiritual Healing
 	local spellRank = select(5, GetTalentInfo(2, 15));
 	return spellRank * 0.02;
-end
-
--- returns the crit bonus from Holy Power
--- Already counted by default
-function CSC_GetPaladinCritStatsFromTalents()
-	-- Holy Power (1, 2, 3, 4, 5)%
-	local spellRank = select(5, GetTalentInfo(1, 13));
-
-	return spellRank;
-end
-
--- returns the defense bonus from the Anticipation Prot talent
-local function CSC_GetPaladinDefenseFromTalents()
-
-    local defense = 0;
-    local defenseTable = { 2, 4, 6, 8, 10 };
-
-    -- Anticipation (2, 4, 6, 8, 10)%
-    local spellRank = select(5, GetTalentInfo(2, 9));
-    if (spellRank > 0) and (spellRank <=5) then
-        defense = defenseTable[spellRank];
-    end
-
-    return defense;
 end
 
 -- returns the modifier from Improved Blessing of Wisdom Holy talent
@@ -85,35 +76,6 @@ function CSC_IsBoWSpellId(spellId)
 	return false;
 end
 
--- returns the defense bonus from the Anticipation Prot talent
-local function CSC_GetWarriorDefenseFromTalents()
-    
-    local defense = 0;
-    local defenseTable = { 2, 4, 6, 8, 10 };
-
-    -- Anticipation (2, 4, 6, 8, 10)%
-    local spellRank = select(5, GetTalentInfo(3, 2));
-    if (spellRank > 0) and (spellRank <=5) then
-		defense = defenseTable[spellRank];
-	end
-
-    return defense;
-end
-
-function CSC_GetDefenseFromTalents(unit)
-    
-	local defense = 0;
-	local unitClassId = select(3, UnitClass(unit));
-
-    if (unitClassId == CSC_PALADIN_CLASS_ID) then
-        defense = CSC_GetPaladinDefenseFromTalents();
-    elseif (unitClassId == CSC_WARRIOR_CLASS_ID) then
-        defense = CSC_GetWarriorDefenseFromTalents();
-    end
-
-    return defense;
-end
-
 -- returns the shapeshift form index for druids
 function CSC_GetShapeshiftForm()
 	local shapeIndex = 0;
@@ -127,19 +89,9 @@ function CSC_GetShapeshiftForm()
 	return shapeIndex;
 end
 
--- returns the bonus crit from the Call of Thunder talent for Shamans
-function CSC_GetShamanCallOfThunderCrit()
-	-- Call of Thunder (Lightning)
-	local spellRank = select(5, GetTalentInfo(1, 8));
-	return spellRank;
-end
 
--- returns the bonus crit from the Tidal Mastery telent for Shamans
-function CSC_GetShamanTidalMasteryCrit()
-	-- Tidal Mastery (Nature/Lightning)
-	local spellRank = select(5, GetTalentInfo(3, 11));
-	return spellRank;
-end
+
+
 
 -- ITEMS AND ENCHANTS RELATED
 function CSC_GetMP5ModifierFromTalents(unit)
@@ -220,29 +172,6 @@ function CSC_GetMP5ModifierFromSetBonus(unit)
 	end
 
     return modifier;
-end
-
-function CSC_GetShamanT2SpellCrit(unit)
-	local spellCritFromSet = 0;
-	local firstItemslotIndex = 1;
-	local lastItemslotIndex = 18;
-
-	local equippedSetItems = 0;
-    for itemSlot = firstItemslotIndex, lastItemslotIndex do
-        local itemId = GetInventoryItemID(unit, itemSlot);
-		
-		if (itemId) then
-			if (itemId == g_TheTenStormsIds[itemId]) then
-				equippedSetItems = equippedSetItems + 1;
-			end
-		end
-    end
-
-    if equippedSetItems >= 5 then
-        spellCritFromSet = 3;
-	end
-
-    return spellCritFromSet;
 end
 
 function CSC_GetBlockValueFromWarriorZGEnchants(unit)

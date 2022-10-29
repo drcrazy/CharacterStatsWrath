@@ -771,12 +771,7 @@ function CSC_PaperDollFrame_SetHitRating(statFrame, unit, ratingIndex)
 		if not spellHitChance then
 			spellHitChance = 0;
 		end
-
-		if (unitClassId == CSC_SHAMAN_CLASS_ID) then
-			local hitFromElementalPrecision = CSC_GetShamanHitFromElementalPrecision();
-			spellHitChance = spellHitChance + hitFromElementalPrecision;
-		end
-		
+	
 		ratingBonus = ratingBonus + spellHitChance;
 		statFrame.spellHitGearTalents = ratingBonus;
 		rating = rating + (combatRatingMult*spellHitChance);

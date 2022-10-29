@@ -38,6 +38,9 @@ function CSC_GetSpellHitModifier(unit)
 	elseif unitClassId == CSC_DEATHKNIGHT_CLASS_ID then
 		local spellRank = select(5, GetTalentInfo(3, 1));  -- Virulence, 1% per rank
 		spellHit = spellRank;
+	elseif unitCLassId == CSC_SHAMAN_CLASS_ID then
+		local spellRank = select(5, GetTalentInfo(1, 16)); -- Elemental Precision, 1% per rank
+		spellHit = spellRank;
 	end
 
 	local spellHitFromAuras = 0;
