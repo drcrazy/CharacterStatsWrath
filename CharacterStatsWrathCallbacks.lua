@@ -246,5 +246,35 @@ function CSC_CharacterMeleeHitChanceSideFrame_OnEnter(self)
 	GameTooltip:AddLine("Your total hit rating converted to hit chance (including gear and talents)");
 	GameTooltip:Show();
 end
+
+function CSC_CharacterExpertiseSideFrame_OnEnter(self)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT");
+	GameTooltip:SetText(STAT_EXPERTISE, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	GameTooltip:AddLine(CSC_SYMBOL_SPACE); -- Blank line.
+
+	local expertise, offhandExpertise = GetExpertise();
+	local speed, offhandSpeed = UnitAttackSpeed("player");
+
+	-- level 83 boss base dodge chance is 6.5%
+	local dodgeChanceNPC;
+	if( offhandSpeed ) then
+		dodgeChanceNPC = 6.5 - expertise*0.25 .." / " .. 6.5 - offhandExpertise*0.25;
+	else
+		dodgeChanceNPC = 6.5 - expertise*0.25;
+	end
+
+	-- level 83 boss base parry chance is 14%
+	local parryChanceNPC;
+	if( offhandSpeed ) then
+		parryChanceNPC = 14 - expertise*0.25 .." / ".. 14 - offhandExpertise*0.25;
+	else
+		parryChanceNPC = 14 - expertise*0.25;
+	end
+
+	GameTooltip:AddDoubleLine("Dodge change of Level 83 NPC/Boss (SoftCap):", dodgeChanceNPC);
+	GameTooltip:AddDoubleLine("Parry change of Level 83 NPC/Boss (HardCap):", parryChanceNPC);
+	GameTooltip:Show();
+end
+
 -- SIDE FRAME CALLBACKS END
 -- OnEnter Tooltip functions END

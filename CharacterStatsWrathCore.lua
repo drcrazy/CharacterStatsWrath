@@ -1127,7 +1127,7 @@ function CSC_SideFrame_SetMissChance(statFrame, unit, ratingIndex)
 		local missChancePlayerLineTwo = format("(Dual wield: %.2F%%)", dwMissChanceVsPlayer);
 		statFrame.tooltip2 = missChanceNPCLineOne..CSC_SYMBOL_TAB..missChanceNPCLineTwo.."\n"..missChancePlayerLineOne..CSC_SYMBOL_TAB..missChancePlayerLineTwo;
 	else
-		statFrame.tooltip = format("Miss Chance vs Level 73 NPC/Boss: %.2F%%", missChanceVsBoss);
+		statFrame.tooltip = format("Miss Chance vs Level 83 NPC/Boss: %.2F%%", missChanceVsBoss);
 		statFrame.tooltip2 = format("Miss Chance vs Level %d NPC: %.2F%%", playerLevel, missChanceVsNPC).."\n"..format("Miss Chance vs Level %d Player: %.2F%%", playerLevel, missChanceVsPlayer);
 	end
 
@@ -1173,10 +1173,23 @@ function CSC_SideFrame_SetMeleeCritRating(statFrame, unit)
 	CSC_PaperDollFrame_SetLabelAndText(statFrame, COMBAT_RATING_NAME9, critRating, false);
 end
 
-function CSC_SideFrame_SetMeleeHasteRating(statFrame, unit)
-	local hasteRating = GetCombatRating(CR_HASTE_MELEE);
-	statFrame.tooltip = format(CR_HASTE_RATING_TOOLTIP, GetCombatRating(CR_HASTE_MELEE), GetCombatRatingBonus(CR_HASTE_MELEE));
-	CSC_PaperDollFrame_SetLabelAndText(statFrame, SPELL_HASTE, hasteRating, false);
+function CSC_SideFrame_SetMeleeExpertise(statFrame, unit)
+
+	statFrame:SetScript("OnEnter", CSC_CharacterExpertiseSideFrame_OnEnter)
+	statFrame:SetScript("OnLeave", function()
+		GameTooltip:Hide()
+	end)
+
+	local expertise, offhandExpertise = GetExpertise();
+	local speed, offhandSpeed = UnitAttackSpeed(unit);
+	local text;
+	if( offhandSpeed ) then
+		text = expertise.." / "..offhandExpertise;
+	else
+		text = expertise;
+	end
+	CSC_PaperDollFrame_SetLabelAndText(statFrame, STAT_EXPERTISE, text);
+	
 end
 
 function CSC_SideFrame_SetArmorPenetration(statFrame, unit)

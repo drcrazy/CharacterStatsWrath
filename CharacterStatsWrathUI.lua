@@ -59,6 +59,105 @@ local SideCategoryStatsDefense = {
     frameLabel = "Defense";
 };
 
+function UIConfig:CreateMenu()
+    if not __DEBUG__ then
+        -- Hide the default stats
+        CharacterAttributesFrame:Hide();
+    end
+    
+    local offsetX = 50;
+    local offsetY = 85;
+
+    if __DEBUG__ then
+        offsetY = -120;
+    end
+
+    CSC_UIFrame.CharacterStatsPanel = CreateFrame("Frame", nil, CharacterFrame); --CharacterFrameInsetRight
+	CSC_UIFrame.CharacterStatsPanel:SetPoint("LEFT", CharacterFrame, "BOTTOMLEFT", offsetX, offsetY);
+	CSC_UIFrame.CharacterStatsPanel:SetHeight(320);
+    CSC_UIFrame.CharacterStatsPanel:SetWidth(200);
+
+    UIConfig:SetupDropdown();
+    UIConfig:SetupConfigInterface();
+
+    UIConfig:InitializeStatsFrames(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown);
+    UIConfig:InitializeSideStatsFrame();
+    UIConfig:UpdateStats();
+    UIConfig:UpdateSideStats();
+end
+
+-- Config
+function UIConfig:SetupConfigInterface()
+
+    CSC_ConfigFrame = CreateFrame("Frame", "CSC_InterfaceOptionsPanel", UIParent);
+    CSC_ConfigFrame.name = "CharacterStatsWrath";
+    InterfaceOptions_AddCategory(CSC_ConfigFrame);
+
+    -- Title and font
+    CSC_ConfigFrame.title = CreateFrame("Frame", CSC_ConfigFrame.name, CSC_ConfigFrame);
+    CSC_ConfigFrame.title:SetPoint("TOPLEFT", CSC_ConfigFrame, "TOPLEFT", 10, -10);
+    CSC_ConfigFrame.title:SetWidth(300);
+    CSC_ConfigFrame.titleString = CSC_ConfigFrame.title:CreateFontString(nil, "OVERLAY", "GameFontNormal");
+    CSC_ConfigFrame.titleString:SetPoint("TOPLEFT", CSC_ConfigFrame, "TOPLEFT", 10, -10);
+    CSC_ConfigFrame.titleString:SetText('|cff00c0ffCharacterStatsWrath|r');
+    CSC_ConfigFrame.titleString:SetFont("Fonts\\FRIZQT__.tff", 20, "OUTLINE");
+
+    -- Checkboxes
+    CSC_ConfigFrame.chkBtnUseBlizzardBlockValue = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
+    CSC_ConfigFrame.chkBtnUseBlizzardBlockValue:SetPoint("TOPLEFT", 20, -30);
+    CSC_ConfigFrame.chkBtnUseBlizzardBlockValue.text:SetText("Use alternative Block Value calculation (Blizzard function)");
+    CSC_ConfigFrame.chkBtnUseBlizzardBlockValue:SetChecked(UISettingsGlobal.useBlizzardBlockValue);
+    CSC_ConfigFrame.chkBtnUseBlizzardBlockValue:SetScript("OnClick", 
+    function()
+        UISettingsGlobal.useBlizzardBlockValue = not UISettingsGlobal.useBlizzardBlockValue;
+    end);
+
+    CSC_ConfigFrame.chkBtnShowADStats = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
+    CSC_ConfigFrame.chkBtnShowADStats:SetPoint("TOPLEFT", 20, -55);
+    CSC_ConfigFrame.chkBtnShowADStats.text:SetText("Show AP and SP stats from Argent Dawn items.");
+    CSC_ConfigFrame.chkBtnShowADStats:SetChecked(UISettingsCharacter.showStatsFromArgentDawnItems);
+    CSC_ConfigFrame.chkBtnShowADStats:SetScript("OnClick", 
+    function()
+        UISettingsCharacter.showStatsFromArgentDawnItems = not UISettingsCharacter.showStatsFromArgentDawnItems;
+    end);
+
+    -- Side Stats frame options
+    CSC_ConfigFrame.chkBtnShowSideStatsMelee = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
+    CSC_ConfigFrame.chkBtnShowSideStatsMelee:SetPoint("TOPLEFT", 20, -110);
+    CSC_ConfigFrame.chkBtnShowSideStatsMelee.text:SetText("Show Melee Category in the side stats window (Requires UI reload)");
+    CSC_ConfigFrame.chkBtnShowSideStatsMelee:SetChecked(UISettingsCharacter.showSideStatsMelee);
+    CSC_ConfigFrame.chkBtnShowSideStatsMelee:SetScript("OnClick", 
+    function()
+        UISettingsCharacter.showSideStatsMelee = not UISettingsCharacter.showSideStatsMelee;
+    end);
+    CSC_ConfigFrame.chkBtnShowSideStatsRanged = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
+    CSC_ConfigFrame.chkBtnShowSideStatsRanged:SetPoint("TOPLEFT", 20, -135);
+    CSC_ConfigFrame.chkBtnShowSideStatsRanged.text:SetText("Show Ranged Category in the side stats window (Requires UI reload)");
+    CSC_ConfigFrame.chkBtnShowSideStatsRanged:SetChecked(UISettingsCharacter.showSideStatsRanged);
+    CSC_ConfigFrame.chkBtnShowSideStatsRanged:SetScript("OnClick", 
+    function()
+        UISettingsCharacter.showSideStatsRanged = not UISettingsCharacter.showSideStatsRanged;
+    end);
+    CSC_ConfigFrame.chkBtnShowSideStatsSpell = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
+    CSC_ConfigFrame.chkBtnShowSideStatsSpell:SetPoint("TOPLEFT", 20, -160);
+    CSC_ConfigFrame.chkBtnShowSideStatsSpell.text:SetText("Show Spell Category in the side stats window (Requires UI reload)");
+    CSC_ConfigFrame.chkBtnShowSideStatsSpell:SetChecked(UISettingsCharacter.showSideStatsSpell);
+    CSC_ConfigFrame.chkBtnShowSideStatsSpell:SetScript("OnClick", 
+    function()
+        UISettingsCharacter.showSideStatsSpell = not UISettingsCharacter.showSideStatsSpell;
+    end);
+    CSC_ConfigFrame.chkBtnShowSideStatsDefense = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
+    CSC_ConfigFrame.chkBtnShowSideStatsDefense:SetPoint("TOPLEFT", 20, -185);
+    CSC_ConfigFrame.chkBtnShowSideStatsDefense.text:SetText("Show Defense Category in the side stats window (Requires UI reload)");
+    CSC_ConfigFrame.chkBtnShowSideStatsDefense:SetChecked(UISettingsCharacter.showSideStatsDefense);
+    CSC_ConfigFrame.chkBtnShowSideStatsDefense:SetScript("OnClick", 
+    function()
+        UISettingsCharacter.showSideStatsDefense = not UISettingsCharacter.showSideStatsDefense;
+    end);
+    
+end
+
+-- Paperdoll
 local function CSC_ResetStatFrames(statFrames)
 
     for i=1, NUM_STATS_TO_SHOW, 1 do
@@ -167,6 +266,118 @@ function UIConfig:SetCharacterStats(statsTable, category)
     CSC_ShowStatFrames(statsTable, category);
 end
 
+function UIConfig:UpdateStats()
+    UIConfig:SetCharacterStats(LeftStatsTable, statsDropdownList[UISettingsCharacter.selectedLeftStatsCategory]);
+    UIConfig:SetCharacterStats(RightStatsTable, statsDropdownList[UISettingsCharacter.selectedRightStatsCategory]);
+end
+
+function UIConfig:SetupDropdown()
+
+    CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown = CreateFrame("Frame", nil, CSC_UIFrame.CharacterStatsPanel, "UIDropDownMenuTemplate");
+    CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown:SetPoint("TOPLEFT", CSC_UIFrame.CharacterStatsPanel, "TOPLEFT", 0, 0);
+
+    CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown = CreateFrame("Frame", nil, CSC_UIFrame.CharacterStatsPanel, "UIDropDownMenuTemplate");
+    CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown:SetPoint("TOPLEFT", CSC_UIFrame.CharacterStatsPanel, "TOPLEFT", 115, 0);
+
+    UIDropDownMenu_Initialize(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, UIConfig.InitializeLeftStatsDropdown);
+    UIDropDownMenu_SetSelectedID(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, UISettingsCharacter.selectedLeftStatsCategory);
+    UIDropDownMenu_SetWidth(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, 99);
+    UIDropDownMenu_JustifyText(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, "LEFT");
+
+    UIDropDownMenu_Initialize(CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown, UIConfig.InitializeRightStatsDropdown);
+    UIDropDownMenu_SetSelectedID(CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown, UISettingsCharacter.selectedRightStatsCategory);
+    UIDropDownMenu_SetWidth(CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown, 99);
+    UIDropDownMenu_JustifyText(CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown, "LEFT");
+end
+
+local function OnClickLeftStatsDropdown(self)
+    UISettingsCharacter.selectedLeftStatsCategory = self:GetID();
+    UIDropDownMenu_SetSelectedID(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, UISettingsCharacter.selectedLeftStatsCategory);
+    UIConfig:SetCharacterStats(LeftStatsTable, statsDropdownList[UISettingsCharacter.selectedLeftStatsCategory]);
+end
+
+local function OnClickRightStatsDropdown(self)
+        
+    UISettingsCharacter.selectedRightStatsCategory = self:GetID();
+    UIDropDownMenu_SetSelectedID(CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown, UISettingsCharacter.selectedRightStatsCategory);
+    UIConfig:SetCharacterStats(RightStatsTable, statsDropdownList[UISettingsCharacter.selectedRightStatsCategory]);
+end
+
+function UIConfig:InitializeLeftStatsDropdown(self, level)
+
+    local info = UIDropDownMenu_CreateInfo();
+    for k,v in pairs(statsDropdownList) do
+        info.text = v;
+        info.func = OnClickLeftStatsDropdown;
+        info.checked = false;
+        UIDropDownMenu_AddButton(info, level);
+     end
+end
+
+function UIConfig:InitializeRightStatsDropdown(self, level)
+    local info = UIDropDownMenu_CreateInfo();
+    for k,v in pairs(statsDropdownList) do
+        info.text = v;
+        info.func = OnClickRightStatsDropdown;
+        info.checked = false;
+        UIDropDownMenu_AddButton(info, level);
+     end
+end
+
+-- Side Panel
+function UIConfig:InitializeSideStatsFrame()
+
+    CSC_UIFrame.SideStatsFrame = CreateFrame("Frame", "CSC_SideStatsFrame", PaperDollItemsFrame, "BasicFrameTemplateWithInset");
+    CSC_UIFrame.SideStatsFrame:SetSize(190, 423);
+    CSC_UIFrame.SideStatsFrame:SetPoint("LEFT", PaperDollItemsFrame, "RIGHT", -30,  30);
+    CSC_UIFrame.SideStatsFrame.title = CSC_UIFrame.SideStatsFrame:CreateFontString(nil, "OVERLAY");
+    CSC_UIFrame.SideStatsFrame.title:SetFontObject("GameFontHighlight");
+    CSC_UIFrame.SideStatsFrame.title:SetPoint("CENTER", CSC_UIFrame.SideStatsFrame.TitleBg, "CENTER", 0,  0);
+    CSC_UIFrame.SideStatsFrame.title:SetText("CharacterStatsWrath");
+
+    CSC_UIFrame.SideStatsFrame.ScrollFrame = CreateFrame("ScrollFrame", nil, CSC_UIFrame.SideStatsFrame, "UIPanelScrollFrameTemplate");
+    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetPoint("TOPLEFT", CSC_UIFrame.SideStatsFrame, "TOPLEFT", -35, -30);
+    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetPoint("BOTTOMRIGHT", CSC_UIFrame.SideStatsFrame, "BOTTOMRIGHT", -35, 10);
+
+    CSC_UIFrame.SideStatsFrame.ScrollChild = CreateFrame("Frame", nil, CSC_UIFrame.SideStatsFrame.ScrollFrame);
+    CSC_UIFrame.SideStatsFrame.ScrollChild:SetSize(200, 420);
+    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetScrollChild(CSC_UIFrame.SideStatsFrame.ScrollChild);
+    --CSC_UIFrame.SideStatsFrame.ScrollFrame:SetScript("OnMouseWheel", function() end);
+
+    CSC_UIFrame.SideStatsFrame.CloseButton:HookScript("OnClick", function()
+        UISettingsCharacter.sideStatsFrameHidden = true;
+    end)
+
+    PaperDollItemsFrame:HookScript("OnShow", function()
+       if UISettingsCharacter.sideStatsFrameHidden then
+            CSC_UIFrame.SideStatsFrame:Hide();
+       end
+    end)
+
+    UIConfig:InitializeSideStatsCategories();
+end
+
+function UIConfig:InitializeSideStatsCategories()
+    local offsetStepY = 15;
+    local accumulatedOffsetY = 0;
+    
+    if UISettingsCharacter.showSideStatsMelee then
+        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsMelee, accumulatedOffsetY, offsetStepY);
+    end
+
+    if UISettingsCharacter.showSideStatsRanged then
+        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsRanged, accumulatedOffsetY, offsetStepY);
+    end
+
+    if UISettingsCharacter.showSideStatsSpell then
+        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsSpell, accumulatedOffsetY, offsetStepY);
+    end
+
+    if UISettingsCharacter.showSideStatsDefense then
+        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsDefense, accumulatedOffsetY, offsetStepY);
+    end
+end
+
 function UIConfig:InitializeSideStatsCategory(frameObject, accumulatedOffsetY, offsetStepY)
     local accumulatedOffset = accumulatedOffsetY;
     local numFrames = frameObject.numFrames;
@@ -205,27 +416,6 @@ function UIConfig:InitializeSideStatsCategory(frameObject, accumulatedOffsetY, o
     return accumulatedOffset;
 end
 
-function UIConfig:InitializeSideStatsCategories()
-    local offsetStepY = 15;
-    local accumulatedOffsetY = 0;
-    
-    if UISettingsCharacter.showSideStatsMelee then
-        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsMelee, accumulatedOffsetY, offsetStepY);
-    end
-
-    if UISettingsCharacter.showSideStatsRanged then
-        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsRanged, accumulatedOffsetY, offsetStepY);
-    end
-
-    if UISettingsCharacter.showSideStatsSpell then
-        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsSpell, accumulatedOffsetY, offsetStepY);
-    end
-
-    if UISettingsCharacter.showSideStatsDefense then
-        accumulatedOffsetY = UIConfig:InitializeSideStatsCategory(SideCategoryStatsDefense, accumulatedOffsetY, offsetStepY);
-    end
-end
-
 function UIConfig:SetCharacterSideStats()
     local unit = "player";
 
@@ -236,7 +426,7 @@ function UIConfig:SetCharacterSideStats()
         CSC_SideFrame_SetMissChance(SideCategoryStatsMelee.frames[3], unit, CR_HIT_MELEE);
         CSC_SideFrame_SetCritCap(SideCategoryStatsMelee.frames[4], unit, CR_HIT_MELEE);
         CSC_SideFrame_SetMeleeCritRating(SideCategoryStatsMelee.frames[5], unit);
-        CSC_SideFrame_SetMeleeHasteRating(SideCategoryStatsMelee.frames[6], unit);
+        CSC_SideFrame_SetMeleeExpertise(SideCategoryStatsMelee.frames[6], unit);
         CSC_SideFrame_SetArmorPenetration(SideCategoryStatsMelee.frames[7], unit);
     end
 
@@ -269,124 +459,9 @@ function UIConfig:SetCharacterSideStats()
     end
 end
 
-function UIConfig:InitializeSideStatsFrame()
-
-    CSC_UIFrame.SideStatsFrame = CreateFrame("Frame", "CSC_SideStatsFrame", PaperDollItemsFrame, "BasicFrameTemplateWithInset");
-    CSC_UIFrame.SideStatsFrame:SetSize(190, 423);
-    CSC_UIFrame.SideStatsFrame:SetPoint("LEFT", PaperDollItemsFrame, "RIGHT", -30,  30);
-    CSC_UIFrame.SideStatsFrame.title = CSC_UIFrame.SideStatsFrame:CreateFontString(nil, "OVERLAY");
-    CSC_UIFrame.SideStatsFrame.title:SetFontObject("GameFontHighlight");
-    CSC_UIFrame.SideStatsFrame.title:SetPoint("CENTER", CSC_UIFrame.SideStatsFrame.TitleBg, "CENTER", 0,  0);
-    CSC_UIFrame.SideStatsFrame.title:SetText("CharacterStatsWrath");
-
-    CSC_UIFrame.SideStatsFrame.ScrollFrame = CreateFrame("ScrollFrame", nil, CSC_UIFrame.SideStatsFrame, "UIPanelScrollFrameTemplate");
-    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetPoint("TOPLEFT", CSC_UIFrame.SideStatsFrame, "TOPLEFT", -35, -30);
-    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetPoint("BOTTOMRIGHT", CSC_UIFrame.SideStatsFrame, "BOTTOMRIGHT", -35, 10);
-
-    CSC_UIFrame.SideStatsFrame.ScrollChild = CreateFrame("Frame", nil, CSC_UIFrame.SideStatsFrame.ScrollFrame);
-    CSC_UIFrame.SideStatsFrame.ScrollChild:SetSize(200, 420);
-    CSC_UIFrame.SideStatsFrame.ScrollFrame:SetScrollChild(CSC_UIFrame.SideStatsFrame.ScrollChild);
-    --CSC_UIFrame.SideStatsFrame.ScrollFrame:SetScript("OnMouseWheel", function() end);
-
-    CSC_UIFrame.SideStatsFrame.CloseButton:HookScript("OnClick", function()
-        UISettingsCharacter.sideStatsFrameHidden = true;
-    end)
-
-    PaperDollItemsFrame:HookScript("OnShow", function()
-       if UISettingsCharacter.sideStatsFrameHidden then
-            CSC_UIFrame.SideStatsFrame:Hide();
-       end
-    end)
-
-    UIConfig:InitializeSideStatsCategories();
-end
-
-function UIConfig:CreateMenu()
-    if not __DEBUG__ then
-        -- Hide the default stats
-        CharacterAttributesFrame:Hide();
-    end
-
-    local offsetX = 50;
-    local offsetY = 85;
-
-    if __DEBUG__ then
-        offsetY = -120;
-    end
-
-    CSC_UIFrame.CharacterStatsPanel = CreateFrame("Frame", nil, CharacterFrame); --CharacterFrameInsetRight
-	CSC_UIFrame.CharacterStatsPanel:SetPoint("LEFT", CharacterFrame, "BOTTOMLEFT", offsetX, offsetY);
-	CSC_UIFrame.CharacterStatsPanel:SetHeight(320);
-    CSC_UIFrame.CharacterStatsPanel:SetWidth(200);
-
-    UIConfig:SetupDropdown();
-    UIConfig:SetupConfigInterface();
-
-    UIConfig:InitializeStatsFrames(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown);
-    UIConfig:InitializeSideStatsFrame();
-    UIConfig:UpdateStats();
-    UIConfig:UpdateSideStats();
-end
-
-function UIConfig:UpdateStats()
-    UIConfig:SetCharacterStats(LeftStatsTable, statsDropdownList[UISettingsCharacter.selectedLeftStatsCategory]);
-    UIConfig:SetCharacterStats(RightStatsTable, statsDropdownList[UISettingsCharacter.selectedRightStatsCategory]);
-end
-
 function UIConfig:UpdateSideStats()
     if UISettingsCharacter.sideStatsFrameHidden or not CharacterFrame:IsVisible() then return end;
     UIConfig:SetCharacterSideStats();
-end
-
-local function OnClickLeftStatsDropdown(self)
-    UISettingsCharacter.selectedLeftStatsCategory = self:GetID();
-    UIDropDownMenu_SetSelectedID(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, UISettingsCharacter.selectedLeftStatsCategory);
-    UIConfig:SetCharacterStats(LeftStatsTable, statsDropdownList[UISettingsCharacter.selectedLeftStatsCategory]);
-end
-
-local function OnClickRightStatsDropdown(self)
-    UISettingsCharacter.selectedRightStatsCategory = self:GetID();
-    UIDropDownMenu_SetSelectedID(CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown, UISettingsCharacter.selectedRightStatsCategory);
-    UIConfig:SetCharacterStats(RightStatsTable, statsDropdownList[UISettingsCharacter.selectedRightStatsCategory]);
-end
-
-function UIConfig:InitializeLeftStatsDropdown(self, level)
-    local info = UIDropDownMenu_CreateInfo();
-    for k,v in pairs(statsDropdownList) do
-        info.text = v;
-        info.func = OnClickLeftStatsDropdown;
-        info.checked = false;
-        UIDropDownMenu_AddButton(info, level);
-     end
-end
-
-function UIConfig:InitializeRightStatsDropdown(self, level)
-    local info = UIDropDownMenu_CreateInfo();
-    for k,v in pairs(statsDropdownList) do
-        info.text = v;
-        info.func = OnClickRightStatsDropdown;
-        info.checked = false;
-        UIDropDownMenu_AddButton(info, level);
-     end
-end
-
-function UIConfig:SetupDropdown()
-
-    CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown = CreateFrame("Frame", nil, CSC_UIFrame.CharacterStatsPanel, "UIDropDownMenuTemplate");
-    CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown:SetPoint("TOPLEFT", CSC_UIFrame.CharacterStatsPanel, "TOPLEFT", 0, 0);
-
-    CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown = CreateFrame("Frame", nil, CSC_UIFrame.CharacterStatsPanel, "UIDropDownMenuTemplate");
-    CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown:SetPoint("TOPLEFT", CSC_UIFrame.CharacterStatsPanel, "TOPLEFT", 115, 0);
-
-    UIDropDownMenu_Initialize(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, UIConfig.InitializeLeftStatsDropdown);
-    UIDropDownMenu_SetSelectedID(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, UISettingsCharacter.selectedLeftStatsCategory);
-    UIDropDownMenu_SetWidth(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, 99);
-    UIDropDownMenu_JustifyText(CSC_UIFrame.CharacterStatsPanel.leftStatsDropDown, "LEFT");
-
-    UIDropDownMenu_Initialize(CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown, UIConfig.InitializeRightStatsDropdown);
-    UIDropDownMenu_SetSelectedID(CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown, UISettingsCharacter.selectedRightStatsCategory);
-    UIDropDownMenu_SetWidth(CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown, 99);
-    UIDropDownMenu_JustifyText(CSC_UIFrame.CharacterStatsPanel.rightStatsDropDown, "LEFT");
 end
 
 function UIConfig:ToggleSideStatsFrame()
@@ -398,76 +473,6 @@ function UIConfig:ToggleSideStatsFrame()
         UISettingsCharacter.sideStatsFrameHidden = false;
         CSC_UIFrame:UpdateSideStats();
     end
-end
-
-function UIConfig:SetupConfigInterface()
-
-    CSC_ConfigFrame = CreateFrame("Frame", "CSC_InterfaceOptionsPanel", UIParent);
-    CSC_ConfigFrame.name = "CharacterStatsWrath";
-    InterfaceOptions_AddCategory(CSC_ConfigFrame);
-
-    -- Title and font
-    CSC_ConfigFrame.title = CreateFrame("Frame", CSC_ConfigFrame.name, CSC_ConfigFrame);
-    CSC_ConfigFrame.title:SetPoint("TOPLEFT", CSC_ConfigFrame, "TOPLEFT", 10, -10);
-    CSC_ConfigFrame.title:SetWidth(300);
-    CSC_ConfigFrame.titleString = CSC_ConfigFrame.title:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-    CSC_ConfigFrame.titleString:SetPoint("TOPLEFT", CSC_ConfigFrame, "TOPLEFT", 10, -10);
-    CSC_ConfigFrame.titleString:SetText('|cff00c0ffCharacterStatsWrath|r');
-    CSC_ConfigFrame.titleString:SetFont("Fonts\\FRIZQT__.tff", 20, "OUTLINE");
-
-    -- Checkboxes
-    CSC_ConfigFrame.chkBtnUseBlizzardBlockValue = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
-    CSC_ConfigFrame.chkBtnUseBlizzardBlockValue:SetPoint("TOPLEFT", 20, -30);
-    CSC_ConfigFrame.chkBtnUseBlizzardBlockValue.text:SetText("Use alternative Block Value calculation (Blizzard function)");
-    CSC_ConfigFrame.chkBtnUseBlizzardBlockValue:SetChecked(UISettingsGlobal.useBlizzardBlockValue);
-    CSC_ConfigFrame.chkBtnUseBlizzardBlockValue:SetScript("OnClick", 
-    function()
-        UISettingsGlobal.useBlizzardBlockValue = not UISettingsGlobal.useBlizzardBlockValue;
-    end);
-
-    CSC_ConfigFrame.chkBtnShowADStats = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
-    CSC_ConfigFrame.chkBtnShowADStats:SetPoint("TOPLEFT", 20, -55);
-    CSC_ConfigFrame.chkBtnShowADStats.text:SetText("Show AP and SP stats from Argent Dawn items.");
-    CSC_ConfigFrame.chkBtnShowADStats:SetChecked(UISettingsCharacter.showStatsFromArgentDawnItems);
-    CSC_ConfigFrame.chkBtnShowADStats:SetScript("OnClick", 
-    function()
-        UISettingsCharacter.showStatsFromArgentDawnItems = not UISettingsCharacter.showStatsFromArgentDawnItems;
-    end);
-
-    -- Side Stats frame options
-    CSC_ConfigFrame.chkBtnShowSideStatsMelee = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
-    CSC_ConfigFrame.chkBtnShowSideStatsMelee:SetPoint("TOPLEFT", 20, -110);
-    CSC_ConfigFrame.chkBtnShowSideStatsMelee.text:SetText("Show Melee Category in the side stats window (Requires UI reload)");
-    CSC_ConfigFrame.chkBtnShowSideStatsMelee:SetChecked(UISettingsCharacter.showSideStatsMelee);
-    CSC_ConfigFrame.chkBtnShowSideStatsMelee:SetScript("OnClick", 
-    function()
-        UISettingsCharacter.showSideStatsMelee = not UISettingsCharacter.showSideStatsMelee;
-    end);
-    CSC_ConfigFrame.chkBtnShowSideStatsRanged = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
-    CSC_ConfigFrame.chkBtnShowSideStatsRanged:SetPoint("TOPLEFT", 20, -135);
-    CSC_ConfigFrame.chkBtnShowSideStatsRanged.text:SetText("Show Ranged Category in the side stats window (Requires UI reload)");
-    CSC_ConfigFrame.chkBtnShowSideStatsRanged:SetChecked(UISettingsCharacter.showSideStatsRanged);
-    CSC_ConfigFrame.chkBtnShowSideStatsRanged:SetScript("OnClick", 
-    function()
-        UISettingsCharacter.showSideStatsRanged = not UISettingsCharacter.showSideStatsRanged;
-    end);
-    CSC_ConfigFrame.chkBtnShowSideStatsSpell = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
-    CSC_ConfigFrame.chkBtnShowSideStatsSpell:SetPoint("TOPLEFT", 20, -160);
-    CSC_ConfigFrame.chkBtnShowSideStatsSpell.text:SetText("Show Spell Category in the side stats window (Requires UI reload)");
-    CSC_ConfigFrame.chkBtnShowSideStatsSpell:SetChecked(UISettingsCharacter.showSideStatsSpell);
-    CSC_ConfigFrame.chkBtnShowSideStatsSpell:SetScript("OnClick", 
-    function()
-        UISettingsCharacter.showSideStatsSpell = not UISettingsCharacter.showSideStatsSpell;
-    end);
-    CSC_ConfigFrame.chkBtnShowSideStatsDefense = CreateFrame("CheckButton", "default", CSC_ConfigFrame, "UICheckButtonTemplate");
-    CSC_ConfigFrame.chkBtnShowSideStatsDefense:SetPoint("TOPLEFT", 20, -185);
-    CSC_ConfigFrame.chkBtnShowSideStatsDefense.text:SetText("Show Defense Category in the side stats window (Requires UI reload)");
-    CSC_ConfigFrame.chkBtnShowSideStatsDefense:SetChecked(UISettingsCharacter.showSideStatsDefense);
-    CSC_ConfigFrame.chkBtnShowSideStatsDefense:SetScript("OnClick", 
-    function()
-        UISettingsCharacter.showSideStatsDefense = not UISettingsCharacter.showSideStatsDefense;
-    end);
-    
 end
 
 function UIConfig:SetStatsPanelVisibile(isVisible)
