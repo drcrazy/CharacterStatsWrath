@@ -1382,7 +1382,7 @@ function CSC_SideFrame_SetAvoidance(statFrame, unit)
 	end
 	
 	statFrame.tooltip = "Needed Avoidance";
-	statFrame.tooltip2 = format("Needed %.2F%% Avoidance (Miss + Dodge + Parry + Block) to reach Crush cap (%.2F%%).\nCurrent: %.F%%", avoidanceMissing, avoidanceCap, avoidanceCurrent);
+	statFrame.tooltip2 = format("Needed %.2F%% Avoidance (Miss + Dodge + Parry + Block) to reach avoidance cap (%.2F%%).\nCurrent: %.F%%", avoidanceMissing, avoidanceCap, avoidanceCurrent);
 	CSC_PaperDollFrame_SetLabelAndText(statFrame, "Avoidance", avoidanceMissingTxt, false);
 end
 
