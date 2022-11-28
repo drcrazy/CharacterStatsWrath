@@ -202,19 +202,25 @@ function CSC_GetPlayerCritCap(unit, ratingIndex)
 	local hitRatingBonus = GetCombatRatingBonus(ratingIndex); -- hit rating in % (hit chance) (from gear sources, doesn't seem to include talents);
 	local totalHit = hitChance + hitRatingBonus;
 	local missChanceVsNPC, missChanceVsBoss, missChanceVsPlayer, dwMissChanceVsNpc, dwMissChanceVsBoss, dwMissChanceVsPlayer = CSC_GetPlayerMissChances(unit, totalHit);
+	local expertisePercent, offhandExpertisePercent = GetExpertisePercent();
 	
 	local playerWeaponSkill = UnitLevel(unit) * 5;
 	-- level 83 boss
 	local bossDefense = 415;
-	-- 0.2% per each point of defense above weapon skill, e.g. 0.2*(415-400)
-	local critSuppression = 3;
-	-- 5% base chance plus 0.1% per each point of defense above weapon skill, e.g. 0.1*(415-400)
-	local dodgeChance = 5 + (bossDefense - playerWeaponSkill) * 0,1;
+	-- 1% per each level above player level + 1.8% for crit from auras
+	local critSuppression = 4.8;
+	-- 5% base chance plus 0.1% per each point of defense above player weapon skill, e.g. 0.1*(415-400)
+	local dodgeChance = 5 + (bossDefense - playerWeaponSkill) * 0.1;
 	-- 24% fixed value in WotLK
 	local glancingChance = 24;
 
-	local critCap = 100 - missChanceVsBoss - dodgeChance - glancingChance + critSuppression;
-	local dwCritCap = 100 - dwMissChanceVsBoss - dodgeChance - glancingChance + critSuppression;
+	-- print("100-"..glancingChance.."-"..missChanceVsBoss.."-"..dodgeChance.."+"..critSuppression.."+"..expertisePercent)
+	-- print ("Def"..bossDefense)
+	-- print ("Weap"..playerWeaponSkill)
+
+
+	local critCap = 100 - glancingChance - missChanceVsBoss - dodgeChance + critSuppression + expertisePercent;
+	local dwCritCap = 100 - glancingChance - dwMissChanceVsBoss - dodgeChance + critSuppression + offhandExpertisePercent;
 
 	return critCap, dwCritCap;
 end
@@ -792,7 +798,7 @@ function CSC_PaperDollFrame_SetExpertise(statFrame, unit)
 	local expertise, offhandExpertise = GetExpertise();
 	local speed, offhandSpeed = UnitAttackSpeed(unit);
 	local text;
-	if( offhandSpeed ) then
+	if(offhandSpeed) then
 		text = expertise.." / "..offhandExpertise;
 	else
 		text = expertise;
@@ -803,7 +809,7 @@ function CSC_PaperDollFrame_SetExpertise(statFrame, unit)
 	
 	local expertisePercent, offhandExpertisePercent = GetExpertisePercent();
 	expertisePercent = format("%.2f", expertisePercent);
-	if( offhandSpeed ) then
+	if(offhandSpeed) then
 		offhandExpertisePercent = format("%.2f", offhandExpertisePercent);
 		text = expertisePercent.."% / "..offhandExpertisePercent.."%";
 	else
@@ -1118,7 +1124,9 @@ function CSC_SideFrame_SetMissChance(statFrame, unit, ratingIndex)
 	local totalHit = hitChance + hitRatingBonus;
 	local missChanceVsNPC, missChanceVsBoss, missChanceVsPlayer, dwMissChanceVsNpc, dwMissChanceVsBoss, dwMissChanceVsPlayer = CSC_GetPlayerMissChances(unit, totalHit);
 
-	if (ratingIndex == CR_HIT_MELEE) then
+	local speed, offhandSpeed = UnitAttackSpeed(unit);
+
+	if (ratingIndex == CR_HIT_MELEE and offhandSpeed) then
 		statFrame.tooltip = format("Miss Chance vs Level 83 NPC/Boss: %.2F%%", missChanceVsBoss)..CSC_SYMBOL_TAB..format("(Dual wield: %.2F%%)", dwMissChanceVsBoss);
 		local missChanceNPCLineOne = format("Miss Chance vs Level %d NPC:     %.2F%%", playerLevel, missChanceVsNPC);
 		local missChanceNPCLineTwo = format("(Dual wield: %.2F%%)", dwMissChanceVsNpc);
@@ -1137,10 +1145,10 @@ end
 function CSC_SideFrame_SetCritCap(statFrame, unit, ratingIndex)
 	local critCap, dwCritCap = CSC_GetPlayerCritCap(unit, ratingIndex);
 
-	statFrame.tooltip = format("Crit cap vs Level 73 NPC/Boss: %.2F%%", critCap);
-	if (ratingIndex == CR_HIT_MELEE) then
-		local offhandItemId = GetInventoryItemID(unit, INVSLOT_OFFHAND);
-		if (offhandItemId) then
+	statFrame.tooltip = format("Crit cap vs Level 83 NPC/Boss: %.2F%%", critCap);
+	if (ratingIndex == CR_HIT_MELEE and offhandSpeed) then
+		local speed, offhandSpeed = UnitAttackSpeed(unit);
+		if (offhandSpeed) then
 			statFrame.tooltip2 = format("Dual wield crit cap: %.2F%%", dwCritCap);
 		end
 	end

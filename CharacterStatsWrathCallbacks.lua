@@ -120,8 +120,8 @@ function CSC_CharacterMeleeCritFrame_OnEnter(self)
 	if self.critChance > critCap then CRITCAP_COLOR_CODE = ORANGE_FONT_COLOR_CODE end
 	local critCapTxt = CRITCAP_COLOR_CODE..format("%.2F%%", critCap)..FONT_COLOR_CODE_CLOSE;
 
-	local offhandItemId = GetInventoryItemID("player", INVSLOT_OFFHAND);
-	if (offhandItemId) then
+	local speed, offhandSpeed = UnitAttackSpeed(self.unit);
+	if (offhandSpeed) then
 		local DWCRITCAP_COLOR_CODE = GREEN_FONT_COLOR_CODE;
 		if self.critChance > dwCritCap then DWCRITCAP_COLOR_CODE = ORANGE_FONT_COLOR_CODE end
 
