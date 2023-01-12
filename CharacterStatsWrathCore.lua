@@ -155,12 +155,11 @@ function CSC_GetPlayerMissChances(unit, playerHitChance)
 
 	-- Boss (level 83)
 	if (bossDefense - playerWeaponSkill >= 11) then
-		missChanceVsBoss = 5 + (bossDefense - playerWeaponSkill) * 0.2;
+		missChanceVsBoss = 6 + (bossDefense - playerWeaponSkill - 10) * 0.4;
 	end
 	if (bossDefense - playerWeaponSkill <= 10) then
 		missChanceVsBoss = 5 + (bossDefense - playerWeaponSkill) * 0.1;
 	end
-	missChanceVsBoss = missChanceVsBoss + 1; -- hit suppression
 
 	local dwMissChanceVsNpc = math.max(missChanceVsNPC + 19 - hitChance);
 	local dwMissChanceVsBoss = math.max(missChanceVsBoss + 19 - hitChance);
@@ -214,13 +213,12 @@ function CSC_GetPlayerCritCap(unit, ratingIndex)
 	-- 24% fixed value in WotLK
 	local glancingChance = 24;
 
-	-- print("100-"..glancingChance.."-"..missChanceVsBoss.."-"..dodgeChance.."+"..critSuppression.."+"..expertisePercent)
-	-- print ("Def"..bossDefense)
-	-- print ("Weap"..playerWeaponSkill)
-
-
 	local critCap = 100 - glancingChance - missChanceVsBoss - dodgeChance + critSuppression + expertisePercent;
 	local dwCritCap = 100 - glancingChance - dwMissChanceVsBoss - dodgeChance + critSuppression + offhandExpertisePercent;
+
+	if (ratingIndex == CR_HIT_RANGED) then
+		critCap = 100 + critSuppression
+	end
 
 	return critCap, dwCritCap;
 end
