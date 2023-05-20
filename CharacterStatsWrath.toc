@@ -1,6 +1,6 @@
-## Interface: 30401
+## Interface: 30402
 ## Author: drcrazy, SlavKnightGeto, 
-## Version: 1.3.0
+## Version: 1.3.1
 ## Title: |cff00aeffCharacterStatsWrath|r
 ## Notes: Advanced Character Stats
 ## DefaultState:  enabled
